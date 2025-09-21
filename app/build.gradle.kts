@@ -80,4 +80,7 @@ dependencies {
 
     // pending intent
     implementation("androidx.work:work-runtime:2.7.0-alpha05")
+
+    // add swipe to refresh
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 }

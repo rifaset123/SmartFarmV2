@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/box_card"
+        android:padding="12dp">
+
+        <!-- Group tanggal -->
+        <LinearLayout
+            android:id="@+id/dateGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="@id/rowSensors"
+            app:layout_constraintBottom_toBottomOf="@id/tv_note_content"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:id="@+id/tv_day_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="21"
+                android:textSize="40sp"
+                android:textStyle="bold"
+                android:lineSpacingExtra="0dp"
+                android:includeFontPadding="false"/>
+
+            <TextView
+                android:id="@+id/tv_month_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SEP"
+                android:textSize="24sp"
+                android:lineSpacingExtra="0dp"
+                android:includeFontPadding="false"/>
+
+            <TextView
+                android:id="@+id/tv_year_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2025"
+                android:textSize="18sp"
+                android:lineSpacingExtra="0dp"
+                android:includeFontPadding="false"/>
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tv_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Catatan : "
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginStart="18dp"
+            app:layout_constraintStart_toEndOf="@+id/dividerStart"
+            app:layout_constraintTop_toBottomOf="@+id/rowSensorsBelow" />
+
+        <TextView
+            android:id="@+id/tv_note_content"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="lorem ipsum sir dolor amet bla lor temporse"
+            android:textSize="14sp"
+            android:ellipsize="none"
+            android:scrollHorizontally="false"
+            android:singleLine="false"
+            android:inputType="textMultiLine"
+            app:layout_constraintStart_toEndOf="@+id/tv_note"
+            app:layout_constraintTop_toBottomOf="@+id/rowSensorsBelow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0" />
+
+
+        <!-- Divider -->
+        <View
+            android:id="@+id/dividerStart"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="12dp"
+            android:background="#E0E0E0"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_note_content"
+            app:layout_constraintStart_toEndOf="@id/dateGroup"
+            app:layout_constraintTop_toTopOf="@id/rowSensors" />
+
+        <!-- Icons row 1 -->
+        <LinearLayout
+            android:id="@+id/rowSensors"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/dividerStart"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:id="@+id/tvTemp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/ic_outline_pulse_alert_24"
+                android:drawablePadding="4dp"
+                android:text="0"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/tvHumidity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/ic_outline_temp_preferences_eco_24"
+                android:drawablePadding="4dp"
+                android:text="20 kg"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/tvHSI"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/ic_baseline_water_drop_24"
+                android:text="20 L"
+                android:textStyle="bold"
+
+                android:gravity="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/rowSensorsBelow"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/dividerStart"
+            app:layout_constraintTop_toBottomOf="@+id/rowSensors">
+
+            <TextView
+                android:id="@+id/tvTempDesc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawablePadding="4dp"
+                android:gravity="center"
+                android:text="Ayam mati" />
+
+            <TextView
+                android:id="@+id/tvHumidityDesc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawablePadding="4dp"
+                android:gravity="center"
+                android:text="Pakan" />
+
+            <TextView
+                android:id="@+id/tvHSIDesc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Minum" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

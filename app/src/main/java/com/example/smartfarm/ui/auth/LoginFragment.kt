@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.smartfarm.R
 import com.example.smartfarm.databinding.FragmentLoginBinding
+import com.example.smartfarm.ui.component.LoadingDialogBar
 import com.example.smartfarm.util.UiState
 import com.example.smartfarm.util.hide
 import com.example.smartfarm.util.isValidEmail
@@ -27,6 +28,7 @@ class LoginFragment : Fragment() {
     val TAG: String = "RegisterFragment"
     lateinit var binding: FragmentLoginBinding
     val viewModel: AuthViewModel by viewModels()
+    lateinit var loadingDialogBar: LoadingDialogBar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +40,7 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        loadingDialogBar = LoadingDialogBar(requireContext())
         observer()
         binding.loginBtn.setOnClickListener {
             if (validation()) {
@@ -62,16 +65,16 @@ class LoginFragment : Fragment() {
             when(state){
                 is UiState.Loading -> {
                     binding.loginBtn.setText("")
-                    binding.loginProgress.show()
+                    loadingDialogBar.showDialog("Memuat")
                 }
                 is UiState.Failure -> {
                     binding.loginBtn.setText("Login")
-                    binding.loginProgress.hide()
+                    loadingDialogBar.hideDialog()
                     toast(state.error)
                 }
                 is UiState.Success -> {
                     binding.loginBtn.setText("Login")
-                    binding.loginProgress.hide()
+                    loadingDialogBar.hideDialog()
                     toast(state.data)
                     findNavController().navigate(R.id.action_loginFragment_to_home_navigation)
                 }

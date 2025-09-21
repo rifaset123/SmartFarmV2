@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.smartfarm.R
 import com.example.smartfarm.data.model.User
 import com.example.smartfarm.databinding.FragmentRegisterBinding
+import com.example.smartfarm.ui.component.LoadingDialogBar
 import com.example.smartfarm.util.UiState
 import com.example.smartfarm.util.hide
 import com.example.smartfarm.util.isValidEmail
@@ -24,6 +25,7 @@ class RegisterFragment : Fragment() {
     val TAG: String = "RegisterFragment"
     lateinit var binding: FragmentRegisterBinding
     val viewModel: AuthViewModel by viewModels()
+    lateinit var loadingDialogBar: LoadingDialogBar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,6 +37,7 @@ class RegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        loadingDialogBar = LoadingDialogBar(requireContext())
         observer()
         binding.registerBtn.setOnClickListener {
             if (validation()){
@@ -52,16 +55,16 @@ class RegisterFragment : Fragment() {
             when(state){
                 is UiState.Loading -> {
                     binding.registerBtn.setText("")
-                    binding.registerProgress.show()
+                    loadingDialogBar.showDialog("Memuat")
                 }
                 is UiState.Failure -> {
                     binding.registerBtn.setText("Register")
-                    binding.registerProgress.hide()
+                    loadingDialogBar.hideDialog()
                     toast(state.error)
                 }
                 is UiState.Success -> {
                     binding.registerBtn.setText("Register")
-                    binding.registerProgress.hide()
+                    loadingDialogBar.hideDialog()
                     toast(state.data)
                     findNavController().navigate(R.id.action_registerFragment_to_home_navigation)
                 }

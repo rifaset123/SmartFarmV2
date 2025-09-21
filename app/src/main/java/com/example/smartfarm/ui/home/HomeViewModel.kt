@@ -10,4 +10,14 @@ class HomeViewModel : ViewModel() {
         value = "This is home Fragment"
     }
     val text: LiveData<String> = _text
+
+    // save spinner selection index
+    private val _selectedCoop = MutableLiveData<Int>().apply {
+        value = 0 // default Kandang 1
+    }
+    val selectedCoop: LiveData<Int> = _selectedCoop
+
+    fun setSelectedCoop(position: Int) {
+        _selectedCoop.value = position
+    }
 }
