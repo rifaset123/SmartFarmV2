@@ -60,9 +60,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Catatan : "
-            android:textStyle="bold"
+            android:layout_marginStart="10dp"
             android:textSize="14sp"
-            android:layout_marginStart="18dp"
+            android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/dividerStart"
             app:layout_constraintTop_toBottomOf="@+id/rowSensorsBelow" />
 

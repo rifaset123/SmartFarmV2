@@ -1,6 +1,8 @@
 package com.example.smartfarm.ui.home
 
 import android.os.Bundle
+import android.transition.Fade
+import android.transition.Slide
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,6 +43,10 @@ class HomeFragment : Fragment() {
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = arrayAdapter
 
+        enterTransition = Fade()
+        exitTransition = Fade()
+        reenterTransition = Fade()
+
         // Restore pilihan terakhir
         homeViewModel.selectedCoop.observe(viewLifecycleOwner) { position ->
             if (spinner.selectedItemPosition != position) {
@@ -58,6 +64,10 @@ class HomeFragment : Fragment() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        binding.includedDataHarian.btnEnterData.setOnClickListener {
+            findNavController().navigate(R.id.action_navigation_home_to_dailyInformationsFragment)
         }
 
         return root

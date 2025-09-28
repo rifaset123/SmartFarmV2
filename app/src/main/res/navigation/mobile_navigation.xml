@@ -15,6 +15,9 @@
             app:destination="@id/loginFragment"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_navigation_home_to_dailyInformationsFragment"
+            app:destination="@id/navigation_dailyInformationsFragment" />
     </fragment>
 
     <fragment
@@ -28,5 +31,20 @@
         android:name="com.example.smartfarm.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/navigation_dailyInformationsFragment"
+        android:name="com.example.smartfarm.ui.daily_informations.DailyInformationsFragment"
+        android:label="DailyInformationsFragment"
+        tools:layout="@layout/fragment_daily_informations">
+        <action
+            android:id="@+id/action_navigation_dailyInformationsFragment_to_dailyInputFragment"
+            app:destination="@id/dailyInputFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/dailyInputFragment"
+        android:name="com.example.smartfarm.ui.daily_informations.input_daily.DailyInputFragment"
+        android:label="fragment_daily_input"
+        tools:layout="@layout/fragment_daily_input" />
 
 </navigation>

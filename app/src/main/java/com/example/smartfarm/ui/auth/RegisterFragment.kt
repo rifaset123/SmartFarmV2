@@ -2,6 +2,7 @@ package com.example.smartfarm.ui.auth
 
 import android.os.Bundle
 import android.util.Log
+import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -43,7 +44,7 @@ class RegisterFragment : Fragment() {
             if (validation()){
                 viewModel.register(
                     email = binding.emailEt.text.trim().toString(),
-                    password = binding.passEt.text.toString(),
+                    password = binding.passwordEt.text.toString(),
                     user = getUserObj()
                 )
             }
@@ -75,49 +76,80 @@ class RegisterFragment : Fragment() {
     fun getUserObj(): User {
         return User(
             id = "",
-            first_name = binding.firstNameEt.text.toString(),
-            last_name = binding.lastNameEt.text.toString(),
-            job_title = binding.jobTitleEt.text.toString(),
+            full_name = binding.fullnameEt.text.toString(),
+            province = binding.provinceEt.text.toString(),
+            city = binding.cityEt.text.toString(),
+            phone = binding.phoneEt.text.toString(),
             email = binding.emailEt.text.toString(),
+            password = binding.passwordEt.text.toString(),
+            confirm_password = binding.confirmPasswordEt.text.toString(),
         )
     }
 
     fun validation(): Boolean {
         var isValid = true
 
-        if (binding.firstNameEt.text.isNullOrEmpty()){
+        // Nama Lengkap
+        if (binding.fullnameEt.text.isNullOrEmpty()) {
             isValid = false
             toast(getString(R.string.enter_first_name))
         }
 
-        if (binding.lastNameEt.text.isNullOrEmpty()){
+        // Provinsi
+        if (binding.provinceEt.text.isNullOrEmpty()) {
             isValid = false
             toast(getString(R.string.enter_last_name))
         }
 
-        if (binding.jobTitleEt.text.isNullOrEmpty()){
+        // Kota
+        if (binding.cityEt.text.isNullOrEmpty()) {
             isValid = false
             toast(getString(R.string.enter_job_title))
         }
 
-        if (binding.emailEt.text.isNullOrEmpty()){
+        // Nomor Telepon
+        val phone = binding.phoneEt.text.toString()
+        val phoneRegex = Regex("^\\+62\\d{8,13}$") // format +62xxxxxxxx
+        if (phone.isEmpty()) {
+            isValid = false
+            toast(getString(R.string.enter_phone))
+        } else if (!phone.matches(phoneRegex)) {
+            isValid = false
+            toast("Nomor telepon harus sesuai format +62xxxxxxxx")
+        }
+
+        // Email
+        val email = binding.emailEt.text.toString()
+        if (email.isEmpty()) {
             isValid = false
             toast(getString(R.string.enter_email))
-        }else{
-            if (!binding.emailEt.text.toString().isValidEmail()){
-                isValid = false
-                toast(getString(R.string.invalid_email))
-            }
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            isValid = false
+            toast(getString(R.string.invalid_email))
         }
-        if (binding.passEt.text.isNullOrEmpty()){
+
+        // Password
+        val password = binding.passwordEt.text.toString()
+        val confirmPassword = binding.confirmPasswordEt.text.toString()
+        val passwordRegex = Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{8,}\$")
+
+        if (password.isEmpty()) {
             isValid = false
             toast(getString(R.string.enter_password))
-        }else{
-            if (binding.passEt.text.toString().length < 8){
-                isValid = false
-                toast(getString(R.string.invalid_password))
-            }
+        } else if (!password.matches(passwordRegex)) {
+            isValid = false
+            toast("Minimal 8 karakter, besar kecil dan simbol")
         }
+
+        // Konfirmasi Password
+        if (confirmPassword.isEmpty()) {
+            isValid = false
+            toast(getString(R.string.enter_password))
+        } else if (confirmPassword != password) {
+            isValid = false
+            toast("Konfirmasi password tidak sesuai")
+        }
+
         return isValid
     }
 

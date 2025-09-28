@@ -1,6 +1,7 @@
 package com.example.smartfarm.ui.auth
 
 import android.os.Bundle
+import android.transition.Fade
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +36,11 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentLoginBinding.inflate(layoutInflater)
+
+        enterTransition = Fade()
+        exitTransition = Fade()
+        reenterTransition = Fade()
+
         return binding.root
     }
 

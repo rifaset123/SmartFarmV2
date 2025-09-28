@@ -14,8 +14,11 @@
     <string name="logout">Logout</string>
 
     <!--  Register  -->
-    <string name="enter_first_name">Enter first name</string>
-    <string name="enter_last_name">Enter last name</string>
-    <string name="enter_job_title">Enter sesuatu</string>
+    <string name="enter_first_name">Masukkan nama lengkap</string>
+    <string name="enter_last_name">Masukkan provinsi anda</string>
+    <string name="enter_job_title">Masukkan kota anda</string>
+    <string name="enter_phone">Masukkan nama lengkap</string>
+    <string name="enter_email_ET">Masukkan email</string>
+    <string name="enter_password_ET">Masukkan Password</string>
 
 </resources>

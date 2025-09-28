@@ -176,11 +176,11 @@
 
         <!-- Enter button -->
         <Button
-            android:id="@+id/btnEnter"
+            android:id="@+id/btnEnterData"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Masukkan Data"
-            android:backgroundTint="#455A64"
+            android:backgroundTint="@color/button_gray"
             android:textColor="@android:color/white"
             android:layout_marginTop="12dp"
             app:cornerRadius="8dp"
