@@ -4,6 +4,7 @@ plugins {
     kotlin("kapt") // Add Kapt plugin
     id("com.google.dagger.hilt.android")
     alias(libs.plugins.google.gms.google.services) // Apply Hilt plugin
+    id ("kotlin-parcelize")
 }
 
 android {
@@ -68,8 +69,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-gcm:11.2.0")
 
     // Hilt
-    implementation("com.google.dagger:hilt-android:2.51.1") // Use the latest Hilt version
-    kapt("com.google.dagger:hilt-android-compiler:2.51.1") // Use the latest Hilt version
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
 
     // Optional - For Hilt and ViewModel
     implementation("androidx.hilt:hilt-navigation-fragment:1.2.0") // Or latest
@@ -85,4 +86,12 @@ dependencies {
 
     // add swipe to refresh
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+    // retrofit
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+
+    // coroutine
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 }

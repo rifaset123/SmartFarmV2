@@ -1,6 +1,8 @@
 package com.example.smartfarm.di
 
 import android.content.SharedPreferences
+import com.example.smartfarm.data.remote.retrofit.service.LoginApi
+import com.example.smartfarm.data.remote.retrofit.service.RegisterApi
 import com.example.smartfarm.data.repository.AuthRepository
 import com.example.smartfarm.data.repository.AuthRepositoryImp
 import com.google.firebase.auth.FirebaseAuth
@@ -37,10 +39,10 @@ object RepositoryModule {
     @Singleton
     fun provideAuthRepository(
         database: FirebaseFirestore,
-        auth: FirebaseAuth,
+        firebaseAuth: FirebaseAuth,
         appPreferences: SharedPreferences,
-        gson: Gson
+        gson: Gson,
     ): AuthRepository {
-        return AuthRepositoryImp(auth, database, appPreferences, gson)
+        return AuthRepositoryImp(firebaseAuth, database, appPreferences, gson)
     }
 }

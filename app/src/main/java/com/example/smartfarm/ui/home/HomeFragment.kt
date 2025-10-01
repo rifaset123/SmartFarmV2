@@ -17,7 +17,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.smartfarm.R
 import com.example.smartfarm.databinding.FragmentHomeBinding
 import com.example.smartfarm.ui.auth.AuthViewModel
+import com.example.smartfarm.ui.component.LoadingDialogBar
 import com.example.smartfarm.util.toast
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -29,6 +31,7 @@ class HomeFragment : Fragment() {
     private val homeViewModel: HomeViewModel by viewModels()
 
     private val arraysCoops = arrayOf("Kandang 1", "Kandang 2", "Kandang 3")
+    private lateinit var loadingDialogBar: LoadingDialogBar
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,6 +39,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        loadingDialogBar = LoadingDialogBar(requireContext())
         val root: View = binding.root
 
         val spinner = binding.includedSensorKandang.spinnerMain
@@ -64,6 +68,28 @@ class HomeFragment : Fragment() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        // get name
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        loadingDialogBar.showDialog("Memuat")
+        if (userId != null) {
+            val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
+            db.collection("user").document(userId).get()
+                .addOnSuccessListener { document ->
+                    _binding?.tvUserName?.text = document.getString("name") ?: "Peternak"
+                    if (isAdded && _binding != null) {
+                        loadingDialogBar.hideDialog()
+                    }
+                }
+                .addOnFailureListener {
+                    _binding?.tvUserName?.text = "Peternak"
+                    if (isAdded && _binding != null) {
+                        loadingDialogBar.hideDialog()
+                    }
+                }
+        } else {
+            binding.tvUserName.text = "Peternak"
         }
 
         binding.includedDataHarian.btnEnterData.setOnClickListener {

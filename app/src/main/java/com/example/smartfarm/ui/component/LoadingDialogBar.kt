@@ -14,6 +14,7 @@ class LoadingDialogBar(private val context: Context) {
         dialog = Dialog(context)
         dialog?.setContentView(R.layout.item_dialog)
         dialog?.setCancelable(false)
+        dialog?.setCanceledOnTouchOutside(false)
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val textView: TextView? = dialog?.findViewById(R.id.loadingText)

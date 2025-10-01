@@ -39,6 +39,7 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loadingDialogBar = LoadingDialogBar(requireContext())
+        prefilledTest()
         observer()
         binding.registerBtn.setOnClickListener {
             if (validation()){
@@ -62,21 +63,56 @@ class RegisterFragment : Fragment() {
                     binding.registerBtn.setText("Register")
                     loadingDialogBar.hideDialog()
                     toast(state.error)
+                    Log.d(TAG, "onViewCreated: ${state.error}")
                 }
                 is UiState.Success -> {
                     binding.registerBtn.setText("Register")
                     loadingDialogBar.hideDialog()
                     toast(state.data)
-                    findNavController().navigate(R.id.action_registerFragment_to_home_navigation)
+
+                    // Get Firebase token and ID
+                    viewModel.getCurrentUser { firebaseUser ->
+                        if (firebaseUser != null) {
+                            firebaseUser.getIdToken(false).addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    val token = task.result.token
+                                    val firebaseId = firebaseUser.uid
+
+                                    viewModel.registerToCustomApi(
+                                        token = token.toString(),
+                                        firebaseId = firebaseId,
+                                        user = getUserObj()
+                                    )
+                                    findNavController().navigate(R.id.action_registerFragment_to_home_navigation)
+                                } else {
+                                    Log.e(TAG, "Failed to get Firebase token: ${task.exception}")
+                                    toast("Failed to register with API")
+                                }
+                            }
+                        } else {
+                            toast("User registration failed")
+                        }
+                    }
                 }
             }
         }
+
+    }
+
+    fun prefilledTest(){
+        binding.fullnameEt.setText("John Doe")
+        binding.provinceEt.setText("Jawa Barat")
+        binding.cityEt.setText("Bandung")
+        binding.phoneEt.setText("+6281234567890")
+        binding.emailEt.setText("johndoe@example.com")
+        binding.passwordEt.setText("@Password123")
+        binding.confirmPasswordEt.setText("@Password123")
     }
 
     fun getUserObj(): User {
         return User(
-            id = "",
-            full_name = binding.fullnameEt.text.toString(),
+            firebase_id = "",
+            name = binding.fullnameEt.text.toString(),
             province = binding.provinceEt.text.toString(),
             city = binding.cityEt.text.toString(),
             phone = binding.phoneEt.text.toString(),

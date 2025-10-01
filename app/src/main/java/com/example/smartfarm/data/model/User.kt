@@ -1,8 +1,8 @@
 package com.example.smartfarm.data.model
 
 data class User(
-    var id: String = "",
-    val full_name: String = "",
+    var firebase_id: String = "",
+    val name: String = "",
     val province: String = "",
     val city: String = "",
     val phone: String = "",

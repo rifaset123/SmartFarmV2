@@ -47,6 +47,7 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loadingDialogBar = LoadingDialogBar(requireContext())
+        prefilledTest()
         observer()
         binding.loginBtn.setOnClickListener {
             if (validation()) {
@@ -64,6 +65,11 @@ class LoginFragment : Fragment() {
         binding.registerLabel.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
+    }
+
+    fun prefilledTest(){
+        binding.emailEt.setText("johndoe@example.com")
+        binding.passEt.setText("@Password123")
     }
 
     fun observer(){
