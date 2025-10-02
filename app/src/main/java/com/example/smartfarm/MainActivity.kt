@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
 
         // hide bottom navbar from certain area
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            val hideOn = setOf(R.id.loginFragment, R.id.registerFragment,  R.id.navigation_dailyInformationsFragment, R.id.dailyInputFragment)
+            val hideOn = setOf(R.id.loginFragment, R.id.registerFragment,  R.id.navigation_dailyInformationsFragment, R.id.dailyInputFragment, R.id.addCoopFragment)
             navView.visibility = if (destination.id in hideOn) View.GONE else View.VISIBLE
         }
     }

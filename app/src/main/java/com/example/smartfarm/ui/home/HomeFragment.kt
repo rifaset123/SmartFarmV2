@@ -96,6 +96,10 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.action_navigation_home_to_dailyInformationsFragment)
         }
 
+        binding.btnAddCoop.setOnClickListener {
+            findNavController().navigate(R.id.action_navigation_home_to_addCoopFragment)
+        }
+
         return root
     }
 

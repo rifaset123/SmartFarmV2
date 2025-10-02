@@ -1,16 +1,20 @@
 package com.example.smartfarm.data.remote.response
 
+import kotlinx.parcelize.Parcelize
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
-data class AddCoopResponse(
+@Parcelize
+data class AddCageResponse(
 
 	@field:SerializedName("response")
 	val response: Response? = null,
 
 	@field:SerializedName("messages")
 	val messages: String? = null
-)
+) : Parcelable
 
+@Parcelize
 data class Response(
 
 	@field:SerializedName("device_id")
@@ -26,8 +30,8 @@ data class Response(
 	val initialPopulation: Int? = null,
 
 	@field:SerializedName("cage_area")
-	val cageArea: Any? = null,
+	val cageArea: Double? = null,
 
 	@field:SerializedName("status")
 	val status: String? = null
-)
+) : Parcelable

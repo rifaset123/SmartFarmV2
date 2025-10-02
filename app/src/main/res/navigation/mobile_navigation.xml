@@ -18,6 +18,9 @@
         <action
             android:id="@+id/action_navigation_home_to_dailyInformationsFragment"
             app:destination="@id/navigation_dailyInformationsFragment" />
+        <action
+            android:id="@+id/action_navigation_home_to_addCoopFragment"
+            app:destination="@id/addCoopFragment" />
     </fragment>
 
     <fragment
@@ -46,5 +49,11 @@
         android:name="com.example.smartfarm.ui.daily_informations.input_daily.DailyInputFragment"
         android:label="fragment_daily_input"
         tools:layout="@layout/fragment_daily_input" />
+
+    <fragment
+        android:id="@+id/addCoopFragment"
+        android:name="com.example.smartfarm.ui.add_coop.AddCoopFragment"
+        android:label="fragment_add_coop"
+        tools:layout="@layout/fragment_add_coop" />
 
 </navigation>

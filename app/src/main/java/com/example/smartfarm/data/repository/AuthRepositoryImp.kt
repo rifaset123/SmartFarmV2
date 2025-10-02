@@ -50,7 +50,32 @@ class AuthRepositoryImp (
                                 .set(user)
                                 .addOnSuccessListener {
                                     // Register to custom API
-                                    registerToCustomApi(firebaseIdToken, user.firebase_id, user, result)
+                                    registerToCustomApi(
+                                        firebaseIdToken,
+                                        user.firebase_id,
+                                        user
+                                    ) { apiState ->
+                                        when (apiState) {
+                                            is Success -> {
+                                                // Store session after successful registration
+                                                storeSession(id = user.firebase_id) { storedUser ->
+                                                    if (storedUser == null) {
+                                                        result.invoke(Failure("User register successfully but session failed to store"))
+                                                    } else {
+                                                        result.invoke(Success("User register successfully!"))
+                                                    }
+                                                }
+                                            }
+
+                                            is Failure -> {
+                                                result.invoke(apiState)
+                                            }
+
+                                            else -> {
+                                                result.invoke(apiState)
+                                            }
+                                        }
+                                    }
                                 }
                                 .addOnFailureListener { exception ->
                                     result.invoke(UiState.Failure(exception.message.toString()))

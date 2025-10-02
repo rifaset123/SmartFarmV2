@@ -14,7 +14,7 @@
         <action
             android:id="@+id/action_registerFragment_to_home_navigation"
             app:destination="@id/mobile_navigation"
-            app:popUpTo="@id/loginFragment"
+            app:popUpTo="@id/registerFragment"
             app:popUpToInclusive="true" />
     </fragment>
 
