@@ -34,6 +34,7 @@ class AddCoopFragment : Fragment() {
         loadingDialogBar = LoadingDialogBar(requireContext())
 
         binding.buttonSubmit.setOnClickListener {
+            val cage_name = binding.editTextCageName.text.toString()
             val initialPopulation = binding.editTextPopulation.text.toString().toIntOrNull() ?: 0
             val cageArea = binding.editTextCageArea.text.toString().toDoubleOrNull() ?: 0.0
             val deviceId = binding.editTextDeviceID.text.toString()
@@ -44,7 +45,7 @@ class AddCoopFragment : Fragment() {
             FirebaseAuth.getInstance().currentUser?.getIdToken(false)
                 ?.addOnSuccessListener { result ->
                     val token = "Bearer ${result.token}"
-                    viewModel.addCage(token, initialPopulation, cageArea, deviceId)
+                    viewModel.addCage(token, initialPopulation, cageArea, deviceId, cage_name)
                     loadingDialogBar.hideDialog()
                     toast("Kandang berhasil ditambahkan!")
                     findNavController().popBackStack()

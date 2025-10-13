@@ -21,4 +21,7 @@
     <string name="enter_email_ET">Masukkan email</string>
     <string name="enter_password_ET">Masukkan Password</string>
 
+    <string name="enter_cage">Masuk</string>
+    <string name="activate_cage">Aktifkan kandang</string>
+
 </resources>

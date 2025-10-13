@@ -20,7 +20,7 @@ class AddCoopViewModel @Inject constructor() : ViewModel() {
     private val _addCageState = MutableLiveData<UiState<AddCageResponse>>()
     val addCageState: LiveData<UiState<AddCageResponse>> = _addCageState
 
-    fun addCage(token: String, initialPopulation: Int, cageArea: Double, deviceId: String) {
+    fun addCage(token: String, initialPopulation: Int, cageArea: Double, deviceId: String, cage_name : String) {
         viewModelScope.launch {
             _addCageState.value = UiState.Loading
             try {
@@ -28,7 +28,8 @@ class AddCoopViewModel @Inject constructor() : ViewModel() {
                 val cageData = AddCage(
                     initial_population = initialPopulation,
                     cage_area = cageArea,
-                    device_id = deviceId
+                    device_id = deviceId,
+                    cage_name = cage_name
                 )
                 val response = cageApi.addCage(token, "+07:00", cageData)
                 _addCageState.value = UiState.Success(response)

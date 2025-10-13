@@ -1,11 +1,13 @@
 package com.example.smartfarm.data.repository
 
 import com.example.smartfarm.data.model.DailyData
+import com.example.smartfarm.data.remote.retrofit.service.cage.CageApi
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class KandangRepository @Inject constructor() {
+class KandangRepository @Inject constructor(
+) {
     private val dataList = mutableListOf<DailyData>()
 
     fun insertDailyData(data: DailyData) {

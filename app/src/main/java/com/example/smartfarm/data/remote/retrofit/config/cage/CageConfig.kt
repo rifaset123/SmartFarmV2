@@ -5,7 +5,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object CageConfig {
-    private const val BASE_URL = "http://10.53.86.142:5000/"
+    private const val BASE_URL = "http://10.114.233.126:5000/"
     val loggingInterceptor = okhttp3.logging.HttpLoggingInterceptor().apply {
         level = okhttp3.logging.HttpLoggingInterceptor.Level.BODY
     }

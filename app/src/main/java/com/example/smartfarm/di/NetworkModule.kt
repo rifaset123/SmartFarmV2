@@ -2,10 +2,13 @@ package com.example.smartfarm.di
 
 import com.example.smartfarm.data.remote.retrofit.service.LoginApi
 import com.example.smartfarm.data.remote.retrofit.service.RegisterApi
+import com.example.smartfarm.data.remote.retrofit.service.cage.CageApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -24,5 +27,33 @@ object NetworkModule {
     @Singleton
     fun provideRegisterApi(retrofit: Retrofit): RegisterApi {
         return retrofit.create(RegisterApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(): OkHttpClient {
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        return OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("http://10.114.233.126:5000/") // <-- CHANGE THIS
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+    }
+
+    // THIS IS THE FIX
+    @Provides
+    @Singleton
+    fun provideCageApi(retrofit: Retrofit): CageApi {
+        return retrofit.create(CageApi::class.java)
     }
 }
