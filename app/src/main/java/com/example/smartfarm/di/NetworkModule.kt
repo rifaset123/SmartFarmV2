@@ -3,6 +3,7 @@ package com.example.smartfarm.di
 import com.example.smartfarm.data.remote.retrofit.service.LoginApi
 import com.example.smartfarm.data.remote.retrofit.service.RegisterApi
 import com.example.smartfarm.data.remote.retrofit.service.cage.CageApi
+import com.example.smartfarm.data.remote.retrofit.service.daily.DailyActivityApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -50,10 +51,15 @@ object NetworkModule {
             .build()
     }
 
-    // THIS IS THE FIX
     @Provides
     @Singleton
     fun provideCageApi(retrofit: Retrofit): CageApi {
         return retrofit.create(CageApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDailyActivityApi(retrofit: Retrofit): DailyActivityApi {
+        return retrofit.create(DailyActivityApi::class.java)
     }
 }

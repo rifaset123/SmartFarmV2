@@ -8,6 +8,7 @@ import com.example.smartfarm.data.model.ActivateCage
 import com.example.smartfarm.data.remote.response.GetCageResponse
 import com.example.smartfarm.data.remote.response.ResponseItem
 import com.example.smartfarm.data.repository.ActivateCageRepository
+import com.example.smartfarm.data.repository.DailyDataRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -18,7 +19,8 @@ enum class PrimaryButtonMode { ACTIVATE, ENTER, HIDDEN }
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val cageRepository: ActivateCageRepository
+    private val cageRepository: ActivateCageRepository,
+    private val dailyRepository: DailyDataRepository
 ) : ViewModel() {
 
     private val _cageNames = MutableLiveData<List<String>>()
@@ -41,6 +43,15 @@ class HomeViewModel @Inject constructor(
 
     private val _uiMessage = MutableLiveData<String>()
     val uiMessage: LiveData<String> = _uiMessage
+
+    private val _todayFood = MutableLiveData<Int?>(null)
+    val todayFood: LiveData<Int?> = _todayFood
+
+    private val _todayDrink = MutableLiveData<Int?>(null)
+    val todayDrink: LiveData<Int?> = _todayDrink
+
+    private val _todayDeath = MutableLiveData<Int?>(null)
+    val todayDeath: LiveData<Int?> = _todayDeath
 
     // expose a mode for the primary button
     private val _primaryButtonMode = MediatorLiveData<PrimaryButtonMode>().apply {
@@ -133,6 +144,29 @@ class HomeViewModel @Inject constructor(
                     _errorMessage.value = e.message ?: "Gagal mengaktifkan kandang"
                     _isLoading.value = false
                 }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun refreshToday(cageId: String, bearerToken: String?) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            dailyRepository.getDailyActivities(
+                bearer = bearerToken?.let { "Bearer $it" },
+                cageId = cageId
+            ).onSuccess { list ->
+                // find entry for "today" (Asia/Jakarta)
+                val zone = java.time.ZoneId.of("Asia/Jakarta")
+                val todayStr = java.time.LocalDate.now(zone).toString() // yyyy-MM-dd
+                val todayItem = list.firstOrNull { it.date?.startsWith(todayStr) == true }
+
+                _todayFood.value = todayItem?.food
+                _todayDrink.value = todayItem?.drink
+                _todayDeath.value = todayItem?.death
+            }.onFailure { e ->
+                _errorMessage.value = e.message ?: "Gagal memuat data hari ini"
+            }
+            _isLoading.value = false
         }
     }
 }

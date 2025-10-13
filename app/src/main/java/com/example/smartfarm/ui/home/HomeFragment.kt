@@ -4,6 +4,7 @@ import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import android.transition.Fade
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
@@ -37,6 +39,12 @@ class HomeFragment : Fragment() {
     private lateinit var loadingDialogBar: LoadingDialogBar
     private lateinit var spinnerAdapter: ArrayAdapter<String>
     private val spinnerItems = mutableListOf<String>()
+    private var lastBearerToken: String? = null
+    private var didInitialLoad = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -50,10 +58,18 @@ class HomeFragment : Fragment() {
         setupTransitions()
         setupSpinner()
         setupObservers()
-        orchestrateLoadingFlow() // <- one entry point that runs the whole sequence
-
+        orchestrateLoadingFlow()
+        setupDailyCard()
         binding.includedDataHarian.btnEnterData.setOnClickListener {
-            findNavController().navigate(R.id.action_navigation_home_to_dailyInformationsFragment)
+            val cageId = homeViewModel.getSelectedCageId()
+            val cageName = homeViewModel.selectedCageName()
+            val args = bundleOf(
+                "cageId" to cageId,
+                "cageName" to cageName
+            )
+            Log.d("HomeFragment", "Navigating to DailyInformationsFragment with cageId: $cageId, cageName: $cageName")
+            findNavController().navigate(R.id.action_navigation_home_to_dailyInformationsFragment, args)
+
         }
         binding.btnAddCoop.setOnClickListener {
             findNavController().navigate(R.id.action_navigation_home_to_addCoopFragment)
@@ -85,11 +101,14 @@ class HomeFragment : Fragment() {
         }
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if (homeViewModel.selectedCoop.value != position) {
                     homeViewModel.setSelectedCoop(position)
-                    val name = spinnerItems.getOrNull(position) ?: "Kandang"
-                    toast("Berpindah ke $name")
+                    val cageId = homeViewModel.getSelectedCageId()
+                    if (cageId != null) {
+                        homeViewModel.refreshToday(cageId, lastBearerToken)
+                    }
                 }
             }
             override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
@@ -134,9 +153,7 @@ class HomeFragment : Fragment() {
                     btn.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
 
                     btn.setOnClickListener {
-                        findNavController().navigate(
-                            toast("to be continued...")
-                        )
+                        toast("to be continued...")
                     }
                 }
             }
@@ -167,9 +184,30 @@ class HomeFragment : Fragment() {
 
         // surface repo errors
         homeViewModel.errorMessage.observe(viewLifecycleOwner) { error ->
-            if (!isAdded || _binding == null) return@observe
-            toast("Error: $error")
+            if (!isAdded || _binding == null) return@observe        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun fetchTodayForSelectedCage() {
+        val cageId = homeViewModel.getSelectedCageId() ?: return
+        val user = FirebaseAuth.getInstance().currentUser
+        user?.getIdToken(false)
+            ?.addOnSuccessListener { r -> homeViewModel.refreshToday(cageId, r.token) }
+            ?.addOnFailureListener { homeViewModel.refreshToday(cageId, null) }
+            ?: run { homeViewModel.refreshToday(cageId, null) }
+    }
+
+    private fun setupDailyCard(){
+        homeViewModel.todayFood.observe(viewLifecycleOwner) {
+            binding.includedDataHarian.tvFoods.text = it?.toString() ?: "-"
         }
+        homeViewModel.todayDrink.observe(viewLifecycleOwner) {
+            binding.includedDataHarian.tvDrinks.text = it?.toString() ?: "-"
+        }
+        homeViewModel.todayDeath.observe(viewLifecycleOwner) {
+            binding.includedDataHarian.tvDeath.text = it?.toString() ?: "-"
+        }
+
     }
 
     private fun orchestrateLoadingFlow() {
@@ -196,22 +234,36 @@ class HomeFragment : Fragment() {
         user.getIdToken(false)
             .addOnSuccessListener { result ->
                 val token = result.token.orEmpty()
+                lastBearerToken = token
                 homeViewModel.getCages(token)
 
-                // 2. wait until cages loading finishes exactly once
                 homeViewModel.isLoading.observeOnce(viewLifecycleOwner) {
+                    // cages are ready, now we can fetch todays data
+                    val cageId = homeViewModel.getSelectedCageId()
+                    if (cageId != null) homeViewModel.refreshToday(cageId, lastBearerToken)
                     proceedAfterCages()
                 }
             }
             .addOnFailureListener { e ->
-                // still continue the flow even if token fails
                 toast("Gagal mengambil token: ${e.message}")
-                // call getCages with empty token or skip based on your repo requirement
                 homeViewModel.getCages("")
+
                 homeViewModel.isLoading.observeOnce(viewLifecycleOwner) {
+                    val cageId = homeViewModel.getSelectedCageId()
+                    if (cageId != null) homeViewModel.refreshToday(cageId, null)
                     proceedAfterCages()
                 }
             }
+
+        homeViewModel.cages.observe(viewLifecycleOwner) { list ->
+            if (!isAdded || _binding == null) return@observe
+            if (!list.isNullOrEmpty()) {
+                val cageId = homeViewModel.getSelectedCageId()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && cageId != null) {
+                    homeViewModel.refreshToday(cageId, lastBearerToken)
+                }
+            }
+        }
     }
 
     private fun fetchFirebaseProfileThenHideDialog(uid: String?) {
@@ -251,6 +303,11 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (!didInitialLoad) {
+            didInitialLoad = true
+        }
+
         binding.logout.setOnClickListener {
             authViewModel.logout {
                 findNavController().navigate(R.id.action_homeFragment_to_loginFragment)

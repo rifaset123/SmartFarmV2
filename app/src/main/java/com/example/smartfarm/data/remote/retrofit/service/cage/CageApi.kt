@@ -26,6 +26,7 @@ interface CageApi {
     @POST("api/activate-cage")
     suspend fun activateCage(
         @Body body: ActivateCage,
-        @Header("Authorization") bearer: String? = null // keep nullable if your API doesnt need token
+        @Header("Authorization") bearer: String? = null
+,        @Header("X-User-Offset") userOffset: String = "+07:00"
     ): AddCageResponse
 }

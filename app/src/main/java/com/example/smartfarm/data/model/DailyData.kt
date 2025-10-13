@@ -1,10 +1,11 @@
 package com.example.smartfarm.data.model
 
 data class DailyData(
-    val coopName: String,
+    val cage_id: String,
     val date: String,
-    val ayamMati: Int,
-    val pakan: String,
-    val minum: String,
-    val catatan: String
+    val food: Int,
+    val drink: Int,
+    val weight: Int,
+    val death: Int,
+    val note: String
 )

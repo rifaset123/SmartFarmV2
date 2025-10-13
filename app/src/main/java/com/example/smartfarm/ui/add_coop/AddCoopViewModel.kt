@@ -5,10 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartfarm.data.model.AddCage
-import com.example.smartfarm.data.model.DailyData
 import com.example.smartfarm.data.remote.response.AddCageResponse
 import com.example.smartfarm.data.remote.retrofit.config.cage.CageConfig
-import com.example.smartfarm.data.repository.KandangRepository
 import com.example.smartfarm.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

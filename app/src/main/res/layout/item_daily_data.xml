@@ -50,7 +50,7 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <TextView
-                android:id="@+id/tvTemp"
+                android:id="@+id/tvDeath"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -61,23 +61,23 @@
                 android:gravity="center" />
 
             <TextView
-                android:id="@+id/tvHumidity"
+                android:id="@+id/tvFoods"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:drawableTop="@drawable/ic_outline_temp_preferences_eco_24"
                 android:drawablePadding="4dp"
-                android:text="20 kg"
+                android:text="0 kg"
                 android:textStyle="bold"
                 android:gravity="center" />
 
             <TextView
-                android:id="@+id/tvHSI"
+                android:id="@+id/tvDrinks"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:drawableTop="@drawable/ic_baseline_water_drop_24"
-                android:text="20 L"
+                android:text="0 L"
                 android:textStyle="bold"
 
                 android:gravity="center" />
