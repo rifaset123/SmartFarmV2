@@ -23,9 +23,13 @@ import com.example.smartfarm.databinding.FragmentHomeBinding
 import com.example.smartfarm.ui.auth.AuthViewModel
 import com.example.smartfarm.ui.component.LoadingDialogBar
 import com.example.smartfarm.util.toast
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -120,7 +124,6 @@ class HomeFragment : Fragment() {
         // update spinner when names arrive
         homeViewModel.primaryButtonMode.observe(viewLifecycleOwner) { mode ->
             if (!isAdded || _binding == null) return@observe
-
             val btn = binding.includedSensorKandang.btnEnter
 
             when (mode) {
@@ -133,14 +136,19 @@ class HomeFragment : Fragment() {
                     btn.isEnabled = !loading
                     btn.text = getString(R.string.activate_cage)
 
-                    // color: green, but gray while loading
                     val colorRes = if (loading) R.color.gray else R.color.btn_activate_green
                     val color = ContextCompat.getColor(requireContext(), colorRes)
                     btn.backgroundTintList = ColorStateList.valueOf(color)
                     btn.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
 
                     btn.setOnClickListener {
-                        if (!loading) homeViewModel.activateSelectedCage()
+                        if (!loading) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                showActivateDatePicker()
+                            } else {
+                                toast("Aktivasi memerlukan Android 8.0 ke atas")
+                            }
+                        }
                     }
                 }
                 PrimaryButtonMode.ENTER -> {
@@ -153,11 +161,12 @@ class HomeFragment : Fragment() {
                     btn.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
 
                     btn.setOnClickListener {
-                        toast("to be continued...")
+                        toast("To be continue...")
                     }
                 }
             }
         }
+
 
 // optionally, disable button while loading
         homeViewModel.isLoading.observe(viewLifecycleOwner) { loading ->
@@ -299,6 +308,28 @@ class HomeFragment : Fragment() {
             }
         }
         observe(owner, obs)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun showActivateDatePicker() {
+        val picker = MaterialDatePicker.Builder
+            .datePicker()
+            .setTitleText("Pilih tanggal aktivasi")
+            .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+            .build()
+
+        picker.addOnPositiveButtonClickListener { selectionMillis ->
+            val zone = ZoneId.of("Asia/Jakarta")
+            val chosen = Instant.ofEpochMilli(selectionMillis).atZone(zone).toLocalDate()
+            val today = LocalDate.now(zone)
+            if (chosen.isAfter(today)) {
+                toast("Tanggal aktivasi tidak boleh lebih dari hari ini")
+                return@addOnPositiveButtonClickListener
+            }
+            homeViewModel.activateSelectedCage(chosen)
+        }
+
+        picker.show(childFragmentManager, "activate_date_picker")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
