@@ -1,6 +1,7 @@
 package com.example.smartfarm.di
 
 import com.example.smartfarm.data.remote.retrofit.service.LoginApi
+import com.example.smartfarm.data.remote.retrofit.service.ProfileApi
 import com.example.smartfarm.data.remote.retrofit.service.RegisterApi
 import com.example.smartfarm.data.remote.retrofit.service.cage.CageApi
 import com.example.smartfarm.data.remote.retrofit.service.daily.DailyActivityApi
@@ -45,7 +46,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://10.114.233.126:5000/") // <-- CHANGE THIS
+            .baseUrl("http://10.34.51.234:5000/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
@@ -61,5 +62,11 @@ object NetworkModule {
     @Singleton
     fun provideDailyActivityApi(retrofit: Retrofit): DailyActivityApi {
         return retrofit.create(DailyActivityApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideProfileApi(retrofit: Retrofit): ProfileApi {
+        return retrofit.create(ProfileApi::class.java)
     }
 }

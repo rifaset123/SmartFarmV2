@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">SmartFarm</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_profile">Profile</string>
     <string name="title_notifications">Notifications</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -21,7 +21,7 @@
     <string name="enter_email_ET">Masukkan email</string>
     <string name="enter_password_ET">Masukkan Password</string>
 
-    <string name="enter_cage">Masuk</string>
+    <string name="enter_cage">Kandang Aktif</string>
     <string name="activate_cage">Aktifkan kandang</string>
 
 </resources>

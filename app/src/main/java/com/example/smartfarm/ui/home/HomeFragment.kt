@@ -307,12 +307,6 @@ class HomeFragment : Fragment() {
         if (!didInitialLoad) {
             didInitialLoad = true
         }
-
-        binding.logout.setOnClickListener {
-            authViewModel.logout {
-                findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
-            }
-        }
     }
 
     override fun onDestroyView() {

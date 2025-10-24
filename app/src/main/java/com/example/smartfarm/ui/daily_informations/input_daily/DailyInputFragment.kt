@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.smartfarm.R
 import com.example.smartfarm.data.model.DailyData
 import com.example.smartfarm.databinding.FragmentDailyInputBinding
+import com.example.smartfarm.util.UiState
 import com.example.smartfarm.util.toast
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
@@ -66,6 +67,26 @@ class DailyInputFragment : Fragment() {
         viewModel.message.observe(viewLifecycleOwner) { msg ->
             if (!msg.isNullOrBlank()) toast(msg)
         }
+
+        // observe submit state to know when to pop back
+        viewModel.submitState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiState.Success -> {
+                    // tell previous fragment (DailyInformations) to refresh
+                    findNavController().previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("refresh_daily", true)
+
+                    // pop immediately
+                    findNavController().navigateUp()
+                }
+                is UiState.Failure -> {
+                    // optional: show toast (already shown via viewModel.message)
+                }
+                is UiState.Loading -> { /* button text already handles */ }
+                null -> {}
+            }
+        }
     }
 
     private fun saveData() {
@@ -89,6 +110,7 @@ class DailyInputFragment : Fragment() {
         val drink = binding.etMinum.text?.toString()?.toDoubleOrNull()
         val weight = binding.etBobot.text?.toString()?.toDoubleOrNull()
         val death = binding.etAyamMati.text?.toString()?.toIntOrNull()
+        val note = binding.etCatatan.text?.toString().takeIf { !it.isNullOrBlank() }
 
         if (food == null || drink == null || weight == null || death == null) {
             toast("Isi pakan, minum, bobot, dan ayam mati dengan benar")
@@ -102,7 +124,7 @@ class DailyInputFragment : Fragment() {
             drink = drink.toInt(),
             weight = weight.toInt(),
             death = death,
-            note = "-"
+            notes = note?: "-"
         )
 
         // get Firebase token for Authorization header
@@ -111,7 +133,6 @@ class DailyInputFragment : Fragment() {
             ?.addOnSuccessListener { result ->
                 val bearer = result.token?.let { "Bearer $it" }
                 viewModel.submitDailyActivity(bearer, req)
-                findNavController().popBackStack()
             }
             ?.addOnFailureListener {
                 // still attempt without token if your API accepts it, or block if required

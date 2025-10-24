@@ -7,5 +7,5 @@ data class DailyData(
     val drink: Int,
     val weight: Int,
     val death: Int,
-    val note: String
+    val notes: String
 )

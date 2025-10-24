@@ -31,7 +31,7 @@ class DailyInformationsAdapter(
             tvDeath.text = (item.death ?: 0).toString()
             tvFoods.text = (item.food ?: 0).toString()
             tvDrinks.text = (item.drink ?: 0).toString()
-            tvNoteContent.text = "-" // backend doesnt return note
+            tvNoteContent.text = (item.notes ?: 0).toString()
         }
     }
 

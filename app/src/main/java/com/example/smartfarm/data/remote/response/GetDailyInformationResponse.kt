@@ -39,5 +39,8 @@ data class GetDailyResponseItem(
 	val drink: Int? = null,
 
 	@field:SerializedName("food")
-	val food: Int? = null
+	val food: Int? = null,
+
+	@field:SerializedName("notes")
+	val notes: String? = null
 ) : Parcelable

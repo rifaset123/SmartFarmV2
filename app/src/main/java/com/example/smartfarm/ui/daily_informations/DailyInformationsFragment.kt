@@ -49,7 +49,6 @@ class DailyInformationsFragment : Fragment() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Loading -> {
-                    loadingDialogBar.showDialog("Memuat data…")
 //                    binding.emptyView.visibility = View.GONE
                     binding.fabAddData.isEnabled = false
                 }
@@ -82,6 +81,28 @@ class DailyInformationsFragment : Fragment() {
                 ?.addOnFailureListener { viewModel.load(cageId, null) }
                 ?: run { viewModel.load(cageId, null) }
         }
+
+        findNavController().currentBackStackEntry
+            ?.savedStateHandle
+            ?.getLiveData<Boolean>("refresh_daily")
+            ?.observe(viewLifecycleOwner) { shouldRefresh ->
+                if (shouldRefresh == true) {
+                    // clear the flag so it doesn't trigger again
+                    findNavController().currentBackStackEntry?.savedStateHandle?.remove<Boolean>("refresh_daily")
+
+                    if (cageId.isBlank()) {
+                        toast("Cage ID tidak ditemukan")
+                    } else {
+                        FirebaseAuth.getInstance().currentUser?.getIdToken(false)
+                            ?.addOnSuccessListener { result ->
+                                val bearer = result.token?.let { "Bearer $it" }
+                                viewModel.load(cageId, bearer)
+                            }
+                            ?.addOnFailureListener { viewModel.load(cageId, null) }
+                            ?: run { viewModel.load(cageId, null) }
+                    }
+                }
+            }
 
         binding.fabAddData.setOnClickListener {
             if (cageId.isBlank()) {

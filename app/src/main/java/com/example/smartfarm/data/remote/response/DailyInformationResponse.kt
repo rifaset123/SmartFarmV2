@@ -30,5 +30,8 @@ data class DailyResponse(
 	val weight: Int? = null,
 
 	@field:SerializedName("food")
-	val food: Int? = null
+	val food: Int? = null,
+
+	@field:SerializedName("food")
+	val notes: String? = null,
 ) : Parcelable
