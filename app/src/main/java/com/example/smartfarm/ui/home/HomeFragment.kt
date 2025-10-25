@@ -327,6 +327,7 @@ class HomeFragment : Fragment() {
                 return@addOnPositiveButtonClickListener
             }
             homeViewModel.activateSelectedCage(chosen)
+            toast("Kandang diaktifkan pada ${chosen.dayOfMonth}/${chosen.monthValue}/${chosen.year}")
         }
 
         picker.show(childFragmentManager, "activate_date_picker")

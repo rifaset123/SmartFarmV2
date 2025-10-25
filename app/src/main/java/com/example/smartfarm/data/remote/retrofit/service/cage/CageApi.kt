@@ -17,7 +17,7 @@ interface CageApi {
         @Body cage: AddCage
     ): AddCageResponse
 
-    @GET("api/get-cages")
+    @GET("api/get-cages-v2")
     suspend fun getCage(
         @Header("Authorization") token: String,
         @Header("X-User-Offset") userOffset: String = "+07:00"
