@@ -5,6 +5,9 @@ import com.example.smartfarm.data.remote.retrofit.service.ProfileApi
 import com.example.smartfarm.data.remote.retrofit.service.RegisterApi
 import com.example.smartfarm.data.remote.retrofit.service.cage.CageApi
 import com.example.smartfarm.data.remote.retrofit.service.daily.DailyActivityApi
+import com.example.smartfarm.data.remote.retrofit.service.notification.NotificationsApi
+import com.example.smartfarm.data.repository.NotificationRepository
+import com.example.smartfarm.data.repository.NotificationRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -69,4 +72,12 @@ object NetworkModule {
     fun provideProfileApi(retrofit: Retrofit): ProfileApi {
         return retrofit.create(ProfileApi::class.java)
     }
+
+    @Provides @Singleton
+    fun provideNotificationsApi(retrofit: Retrofit): NotificationsApi =
+        retrofit.create(NotificationsApi::class.java)
+
+    @Provides @Singleton
+    fun provideNotificationRepo(api: NotificationsApi): NotificationRepository =
+        NotificationRepositoryImpl(api)
 }

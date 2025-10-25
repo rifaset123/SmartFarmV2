@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:paddingTop="?attr/actionBarSize"
     tools:context=".ui.home.HomeFragment">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,10 +16,9 @@
         <TextView
             android:id="@+id/tvCoopsTitle"
             android:layout_width="0dp"
-            android:paddingStart="12dp"
             android:layout_height="wrap_content"
+            android:paddingStart="12dp"
             android:text="Selamat Datang,"
-            android:lineSpacingExtra="0dp"
             android:includeFontPadding="false"
             android:textSize="14sp"
             android:textColor="@color/black"
@@ -37,38 +37,91 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/btnAddCoop"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvCoopsTitle" />
+            app:layout_constraintTop_toBottomOf="@id/tvCoopsTitle" />
 
         <Button
             android:id="@+id/btnAddCoop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
-            android:drawableLeft="@drawable/ic_baseline_add_24"
+            android:drawableStart="@drawable/ic_baseline_add_24"
             android:text="Tambah Kandang"
             android:textAllCaps="false"
             android:textColor="@color/black"
-            app:layout_constraintBottom_toBottomOf="@+id/tvUserName"
+            app:layout_constraintBottom_toBottomOf="@id/tvUserName"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tvCoopsTitle" />
+            app:layout_constraintTop_toTopOf="@id/tvCoopsTitle" />
 
         <include
-            layout="@layout/item_floor_card"
             android:id="@+id/included_sensor_kandang"
-            android:layout_width="match_parent"
+            layout="@layout/item_floor_card"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             app:layout_constraintTop_toBottomOf="@id/tvUserName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
+        <LinearLayout
+            android:id="@+id/predictionEmptyRoot"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            app:layout_constraintTop_toBottomOf="@id/included_sensor_kandang"
+            app:layout_constraintBottom_toTopOf="@id/included_data_harian"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Top divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#E6EAF0" />
+
+            <!-- Content -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/tvPredTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hasil Prediksi"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#1F2A37" />
+
+                <TextView
+                    android:id="@+id/tvPredSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Aktifkan kandang untuk dapat menggunakan fitur ini."
+                    android:textSize="13sp"
+                    android:textColor="#6B7280" />
+            </LinearLayout>
+
+            <!-- Bottom divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#E6EAF0" />
+        </LinearLayout>
 
         <include
-            layout="@layout/item_daily_data"
             android:id="@+id/included_data_harian"
-            android:layout_width="match_parent"
+            layout="@layout/item_daily_data"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/included_sensor_kandang"
+            app:layout_constraintTop_toBottomOf="@id/predictionEmptyRoot"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 

@@ -8,7 +8,6 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.smartfarm.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
