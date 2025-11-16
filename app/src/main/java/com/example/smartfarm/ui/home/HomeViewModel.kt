@@ -5,12 +5,16 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.*
 import com.example.smartfarm.data.model.ActivateCage
+import com.example.smartfarm.data.model.DeviceData
 import com.example.smartfarm.data.remote.response.GetCageResponse
 import com.example.smartfarm.data.remote.response.ResponseItem
 import com.example.smartfarm.data.repository.ActivateCageRepository
 import com.example.smartfarm.data.repository.DailyDataRepository
+import com.example.smartfarm.mqtt.MqttClientManager
+import com.example.smartfarm.mqtt.MqttSyncManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -20,7 +24,8 @@ enum class PrimaryButtonMode { ACTIVATE, ENTER, HIDDEN }
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val cageRepository: ActivateCageRepository,
-    private val dailyRepository: DailyDataRepository
+    private val dailyRepository: DailyDataRepository,
+    private val mqtt: MqttSyncManager
 ) : ViewModel() {
 
     private val _cageNames = MutableLiveData<List<String>>()
@@ -61,10 +66,79 @@ class HomeViewModel @Inject constructor(
 
     private var authToken: String? = null
 
-    fun setSelectedCoop(position: Int) {
-        _selectedCoop.value = position
-        recomputeButtonMode()
+    // mqtt live data
+    private val _deviceData = MutableLiveData<DeviceData?>()
+    val deviceData: LiveData<DeviceData?> = _deviceData
+
+    // optional separate fields for UI
+    private val _deviceTemperature = MutableLiveData<Double>()
+    val deviceTemperature: LiveData<Double> = _deviceTemperature
+
+    private val _deviceHumidity = MutableLiveData<Double>()
+    val deviceHumidity: LiveData<Double> = _deviceHumidity
+
+    private val _deviceAmmonia = MutableLiveData<Double>()
+    val deviceAmmonia: LiveData<Double> = _deviceAmmonia
+
+    private val _sensorStatusText = MutableLiveData<String?>()
+    val sensorStatusText: LiveData<String?> = _sensorStatusText
+
+    private var lastSubscribedTopic: String? = null
+    private var lastDataTopic: String? = null
+    private var lastStatusTopic: String? = null
+
+
+    init {
+        mqtt.connect()
+        viewModelScope.launch {
+            mqtt.messages.collect { msg ->
+                when {
+                    msg.topic.startsWith("iot/broiler/data/") -> {
+                        val obj = JSONObject(msg.payload)
+                        obj.optDouble("temperature").takeIf { !it.isNaN() }?.let { _deviceTemperature.postValue(it) }
+                        obj.optDouble("humidity").takeIf { !it.isNaN() }?.let { _deviceHumidity.postValue(it) }
+                        obj.optDouble("ammonia").takeIf { !it.isNaN() }?.let { _deviceAmmonia.postValue(it) }
+                        _sensorStatusText.postValue("Online")
+                    }
+                    msg.topic.startsWith("iot/broiler/status/") -> {
+                        when (msg.payload.trim().lowercase()) {
+                            "online"  -> _sensorStatusText.postValue("Online")
+                            "offline" -> {
+                                _sensorStatusText.postValue("Offline")
+                                clearRealtimeValues()
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
+
+
+    private fun parseDevicePayload(payload: String): DeviceData? {
+        return try {
+            val obj = JSONObject(payload)
+            DeviceData(
+                deviceId = obj.optString("device_id"),
+                temperature = obj.optDouble("temperature"),
+                humidity = obj.optDouble("humidity"),
+                ammonia = obj.optDouble("ammonia"),
+                timestamp = obj.optLong("timestamp"),
+                offset = obj.optInt("offset")
+            )
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    override fun onCleared() {
+        lastDataTopic?.let { mqtt.unsubscribe(it) }
+        lastStatusTopic?.let { mqtt.unsubscribe(it) }
+        lastDataTopic = null
+        lastStatusTopic = null
+        super.onCleared()
+    }
+
 
     fun getCages(token: String) {
         authToken = token
@@ -75,10 +149,29 @@ class HomeViewModel @Inject constructor(
                     _cagesData.value = response
                     val list = response.response?.filterNotNull().orEmpty()
                     _cages.value = list
-                    _cageNames.value = if (list.isEmpty())
-                        listOf("Tidak ada kandang") else list.map { it.cageName ?: "(tanpa nama)" }
+                    _cageNames.value = if (list.isEmpty()) listOf("Tidak ada kandang")
+                    else list.map { it.cageName ?: "(tanpa nama)" }
                     _isLoading.value = false
                     recomputeButtonMode()
+
+                    // after you set the list...
+                    val first = list.firstOrNull()
+                    val active = first?.status?.equals("active", ignoreCase = true) == true
+                    val deviceId = first?.deviceId
+
+                    when {
+                        active && deviceId.isNullOrBlank() -> {
+                            showDeviceNotFound()
+                        }
+                        active && deviceId != null -> {
+                            clearRealtimeValues()
+                            subscribeToDevice(deviceId)      // sets default "Offline" for active+device
+                        }
+                        else -> {
+                            clearRealtimeUiAndUnsubscribe()  // inactive -> blank/null status
+                        }
+                    }
+
                 }
                 .onFailure { e ->
                     _errorMessage.value = e.message ?: "Unknown error"
@@ -86,6 +179,49 @@ class HomeViewModel @Inject constructor(
                     recomputeButtonMode()
                 }
         }
+    }
+
+    fun setSelectedCoop(position: Int) {
+        _selectedCoop.value = position
+        recomputeButtonMode()
+
+        // clear old readings immediately
+        clearRealtimeValues()
+
+        val item = currentSelectedItem()
+        val active = item?.status?.equals("active", ignoreCase = true) == true
+        val deviceId = item?.deviceId
+
+        when {
+            active && deviceId.isNullOrBlank() -> {
+                showDeviceNotFound()
+            }
+            active && !deviceId.isNullOrBlank() -> {
+                subscribeToDevice(deviceId)   // default "Offline" until data/status says Online
+            }
+            else -> {
+                clearRealtimeUiAndUnsubscribe() // inactive -> blank
+            }
+        }
+    }
+
+    private fun subscribeToDevice(deviceId: String) {
+        // ensure stale values are gone even for “offline” kandang
+        clearRealtimeValues()
+
+        val dataTopic = "iot/broiler/data/$deviceId"
+        val statusTopic = "iot/broiler/status/$deviceId"
+
+        // unsubscribe previous topics if changed (as you already do)
+        if (lastDataTopic != null && lastDataTopic != dataTopic) mqtt.unsubscribe(lastDataTopic!!)
+        if (lastStatusTopic != null && lastStatusTopic != statusTopic) mqtt.unsubscribe(lastStatusTopic!!)
+
+        // subscribe new
+        if (lastDataTopic != dataTopic) { mqtt.subscribe(dataTopic); lastDataTopic = dataTopic }
+        if (lastStatusTopic != statusTopic) { mqtt.subscribe(statusTopic); lastStatusTopic = statusTopic }
+
+        // default label for active+device is Offline until proven Online
+        _sensorStatusText.value = "Offline"
     }
 
     private fun currentSelectedItem(): ResponseItem? {
@@ -149,15 +285,19 @@ class HomeViewModel @Inject constructor(
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun refreshToday(cageId: String, bearerToken: String?) {
+        // only allow if selected cage is active
+        if (!isSelectedCageActive()) {
+            _errorMessage.value = "Kandang belum aktif"
+            return
+        }
         viewModelScope.launch {
             _isLoading.value = true
             dailyRepository.getDailyActivities(
                 bearer = bearerToken?.let { "Bearer $it" },
                 cageId = cageId
             ).onSuccess { list ->
-                // find entry for "today" (Asia/Jakarta)
                 val zone = java.time.ZoneId.of("Asia/Jakarta")
-                val todayStr = java.time.LocalDate.now(zone).toString() // yyyy-MM-dd
+                val todayStr = java.time.LocalDate.now(zone).toString()
                 val todayItem = list.firstOrNull { it.date?.startsWith(todayStr) == true }
 
                 _todayFood.value = todayItem?.food
@@ -169,4 +309,37 @@ class HomeViewModel @Inject constructor(
             _isLoading.value = false
         }
     }
+
+    private fun clearRealtimeUiAndUnsubscribe() {
+        _deviceTemperature.value = 0.0
+        _deviceHumidity.value = 0.0
+        _deviceAmmonia.value = 0.0
+        _deviceData.value = null
+        _sensorStatusText.value = null
+
+        lastDataTopic?.let { mqtt.unsubscribe(it) }
+        lastStatusTopic?.let { mqtt.unsubscribe(it) }
+        lastDataTopic = null
+        lastStatusTopic = null
+    }
+
+    private fun showDeviceNotFound() {
+        clearRealtimeValues()
+        // stop any previous subscriptions
+        lastDataTopic?.let { mqtt.unsubscribe(it) }
+        lastStatusTopic?.let { mqtt.unsubscribe(it) }
+        lastDataTopic = null
+        lastStatusTopic = null
+
+        _sensorStatusText.value = "Device not found"
+    }
+
+
+    private fun clearRealtimeValues() {
+        _deviceTemperature.value = 0.0
+        _deviceHumidity.value = 0.0
+        _deviceAmmonia.value = 0.0
+        _deviceData.value = null
+    }
+
 }

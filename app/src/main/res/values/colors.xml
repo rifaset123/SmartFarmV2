@@ -15,4 +15,12 @@
     <color name="red_600">#D32F2F</color>
     <color name="notif_unread_bg">#E8F0FF</color>
     <color name="notif_read_bg">#FFFFFFFF</color>
+
+<!--    status-->
+    <color name="red">#D32F2F</color>
+    <color name="status_green_bg">#7DE985</color>
+
+    <color name="status_warning">#B26A00</color>
+    <color name="status_warning_bg">#FFF3E0</color>
+
 </resources>

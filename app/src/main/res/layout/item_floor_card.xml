@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:text="Offline"
             android:textSize="12sp"
-            android:textColor="#D32F2F"
+            android:textColor="@color/red"
             android:background="@drawable/bg_status_offline"
             android:paddingHorizontal="8dp"
             android:paddingVertical="4dp"
@@ -76,7 +76,7 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <TextView
-                android:id="@+id/tvDeath"
+                android:id="@+id/tvTemp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -87,7 +87,7 @@
                 android:gravity="center" />
 
             <TextView
-                android:id="@+id/tvFoods"
+                android:id="@+id/tvAmmonia"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -98,7 +98,7 @@
                 android:gravity="center" />
 
             <TextView
-                android:id="@+id/tvDrinks"
+                android:id="@+id/tvHumidity"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

@@ -79,6 +79,42 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.action_navigation_home_to_addCoopFragment)
         }
 
+        homeViewModel.deviceData.observe(viewLifecycleOwner) { data ->
+            if (data != null) {
+                binding.includedSensorKandang.tvTemp.text = "${data.temperature} C"
+                binding.includedSensorKandang.tvHumidityDesc.text = "${data.humidity} %"
+                binding.includedSensorKandang.tvAmmonia.text = "${data.ammonia} ppm"
+
+            }
+        }
+
+        homeViewModel.sensorStatusText.observe(viewLifecycleOwner) { status ->
+            val tv = binding.includedSensorKandang.tvStatus
+            when (status) {
+                "Online" -> {
+                    tv.text = "Online"
+                    tv.setTextColor(ContextCompat.getColor(requireContext(), R.color.btn_activate_green))
+                    tv.setBackgroundResource(R.drawable.bg_status_online)
+                }
+                "Offline" -> {
+                    tv.text = "Offline"
+                    tv.setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
+                    tv.setBackgroundResource(R.drawable.bg_status_offline)
+                }
+                "Device not found" -> {
+                    tv.text = "Device not found"
+                    tv.setTextColor(ContextCompat.getColor(requireContext(), R.color.status_warning))
+                    tv.setBackgroundResource(R.drawable.bg_status_warning)
+                }
+                else -> {
+                    tv.text = ""
+                    tv.background = null
+                }
+            }
+        }
+
+
+
         return binding.root
     }
 
@@ -207,15 +243,16 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupDailyCard(){
-        homeViewModel.todayFood.observe(viewLifecycleOwner) {
-            binding.includedDataHarian.tvFoods.text = it?.toString() ?: "-"
+        homeViewModel.deviceTemperature.observe(viewLifecycleOwner) { temp ->
+            binding.includedSensorKandang.tvTemp.text = temp?.toString() ?: "-"
         }
-        homeViewModel.todayDrink.observe(viewLifecycleOwner) {
-            binding.includedDataHarian.tvDrinks.text = it?.toString() ?: "-"
+        homeViewModel.deviceHumidity.observe(viewLifecycleOwner) { hum ->
+            binding.includedSensorKandang.tvHumidity.text = hum?.toString() ?: "-"
         }
-        homeViewModel.todayDeath.observe(viewLifecycleOwner) {
-            binding.includedDataHarian.tvDeath.text = it?.toString() ?: "-"
+        homeViewModel.deviceAmmonia.observe(viewLifecycleOwner) { amm ->
+            binding.includedSensorKandang.tvAmmonia.text = amm?.toString() ?: "-"
         }
+
 
     }
 

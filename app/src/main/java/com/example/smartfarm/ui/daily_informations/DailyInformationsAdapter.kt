@@ -28,9 +28,9 @@ class DailyInformationsAdapter(
             tvDayDate.text = d
             tvMonthDate.text = m
             tvYearDate.text = y
-            tvDeath.text = (item.death ?: 0).toString()
-            tvFoods.text = (item.food ?: 0).toString()
-            tvDrinks.text = (item.drink ?: 0).toString()
+            tvTemp.text = (item.death ?: 0).toString()
+            tvAmmonia.text = (item.food ?: 0).toString()
+            tvHumidity.text = (item.drink ?: 0).toString()
             tvNoteContent.text = (item.notes ?: 0).toString()
         }
     }

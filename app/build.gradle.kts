@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.example.smartfarm"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.smartfarm"
@@ -69,8 +69,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-gcm:11.2.0")
 
     // Hilt
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+    implementation("com.google.dagger:hilt-android:2.57.2")
+    kapt("com.google.dagger:hilt-android-compiler:2.57.2")
 
     // Optional - For Hilt and ViewModel
     implementation("androidx.hilt:hilt-navigation-fragment:1.2.0") // Or latest
@@ -88,10 +88,13 @@ dependencies {
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
     // retrofit
-    implementation("com.squareup.retrofit2:retrofit:3.0.0")
-    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
     // coroutine
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // MQTT
+    implementation("com.github.hannesa2:paho.mqtt.android:4.2.4")
 }

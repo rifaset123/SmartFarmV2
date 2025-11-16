@@ -12,6 +12,7 @@ import com.example.smartfarm.databinding.FragmentAddCoopBinding
 import com.example.smartfarm.databinding.FragmentDailyInputBinding
 import com.example.smartfarm.databinding.FragmentHomeBinding
 import com.example.smartfarm.ui.component.LoadingDialogBar
+import com.example.smartfarm.util.UiState
 import com.example.smartfarm.util.toast
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,50 +20,70 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class AddCoopFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = AddCoopFragment()
-    }
-
     private val viewModel: AddCoopViewModel by viewModels()
+
     private var _binding: FragmentAddCoopBinding? = null
     private val binding get() = _binding!!
-    lateinit var loadingDialogBar: LoadingDialogBar
+
+    private lateinit var loadingDialogBar: LoadingDialogBar
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentAddCoopBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentAddCoopBinding.bind(view)
         loadingDialogBar = LoadingDialogBar(requireContext())
 
+        // 1) observe state from VM
+        viewModel.addCageState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiState.Loading -> {
+                    loadingDialogBar.showDialog("Memuat...")
+                }
+                is UiState.Success -> {
+                    loadingDialogBar.hideDialog()
+                    toast("Kandang berhasil ditambahkan!")
+                    // go back to home
+                    findNavController().popBackStack()
+                }
+                is UiState.Failure -> {
+                    loadingDialogBar.hideDialog()
+                    toast(state.error ?: "Terjadi kesalahan!")
+                }
+                null -> Unit
+            }
+        }
+
+        // 2) submit button
         binding.buttonSubmit.setOnClickListener {
-            val cage_name = binding.editTextCageName.text.toString()
-            val initialPopulation = binding.editTextPopulation.text.toString().toIntOrNull() ?: 0
-            val cageArea = binding.editTextCageArea.text.toString().toDoubleOrNull() ?: 0.0
-            val deviceId = binding.editTextDeviceID.text.toString()
+            val cageName = binding.editTextCageName.text.toString().trim()
+            val initialPopulation = binding.editTextPopulation.text.toString().toIntOrNull()
+            val cageArea = binding.editTextCageArea.text.toString().toDoubleOrNull()
+            val deviceId = binding.editTextDeviceID.text.toString().trim()
 
-            loadingDialogBar.showDialog("Memuat...")
+            // simple validation
+            if (cageName.isEmpty() || initialPopulation == null || cageArea == null || deviceId.isEmpty()) {
+                toast("Mohon isi semua field dengan benar.")
+                return@setOnClickListener
+            }
 
-            // Get Firebase token
+            // get firebase token first
             FirebaseAuth.getInstance().currentUser?.getIdToken(false)
                 ?.addOnSuccessListener { result ->
                     val token = "Bearer ${result.token}"
-                    viewModel.addCage(token, initialPopulation, cageArea, deviceId, cage_name)
-                    loadingDialogBar.hideDialog()
-                    toast("Kandang berhasil ditambahkan!")
-                    findNavController().popBackStack()
+                    // call VM → will trigger UiState.Loading etc.
+                    viewModel.addCage(token, initialPopulation, cageArea, deviceId, cageName)
                 }
-                ?.addOnFailureListener { exception ->
-                    loadingDialogBar.hideDialog()
-                    toast("Terjadi kesalahan! : ${exception.message}")
+                ?.addOnFailureListener { e ->
+                    toast("Gagal mengambil token: ${e.message}")
                 }
         }
-    }
-
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return inflater.inflate(R.layout.fragment_add_coop, container, false)
     }
 
     override fun onDestroyView() {
