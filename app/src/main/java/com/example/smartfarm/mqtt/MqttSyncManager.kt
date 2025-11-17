@@ -22,7 +22,7 @@ class MqttSyncManager @Inject constructor(
     @ApplicationContext context: Context
 ) {
     // change to your broker
-    private val serverUri = "tcp://10.161.169.168:1883"
+    private val serverUri = "tcp://10.120.32.98:1883"
     private val clientId = "android-" + UUID.randomUUID().toString().take(8)
 
     private val client = MqttAndroidClient(context, serverUri, clientId)

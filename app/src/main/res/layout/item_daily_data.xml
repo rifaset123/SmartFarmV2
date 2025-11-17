@@ -60,7 +60,7 @@
                 android:layout_weight="1"
                 android:drawableTop="@drawable/ic_outline_pulse_alert_24"
                 android:drawablePadding="4dp"
-                android:text="0"
+                android:text="-"
                 android:textStyle="bold"
                 android:gravity="center" />
 
@@ -72,7 +72,7 @@
                 android:layout_weight="1"
                 android:drawableTop="@drawable/ic_outline_temp_preferences_eco_24"
                 android:drawablePadding="4dp"
-                android:text="0 kg"
+                android:text="-"
                 android:textStyle="bold"
                 android:gravity="center" />
 
@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:drawableTop="@drawable/ic_baseline_water_drop_24"
-                android:text="0 L"
+                android:text="-"
                 android:textStyle="bold"
 
                 android:gravity="center" />

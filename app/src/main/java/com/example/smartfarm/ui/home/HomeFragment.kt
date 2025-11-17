@@ -90,12 +90,20 @@ class HomeFragment : Fragment() {
 
         homeViewModel.sensorStatusText.observe(viewLifecycleOwner) { status ->
             val tv = binding.includedSensorKandang.tvStatus
+            val tvTEmp = binding.includedSensorKandang.tvTemp
+            val tvAmm = binding.includedSensorKandang.tvAmmonia
+            val tvHummi = binding.includedSensorKandang.tvHumidity
+            val btnEnter = binding.includedSensorKandang.btnEnter
+
             when (status) {
                 "Online" -> {
                     tv.text = "Online"
                     tv.setTextColor(ContextCompat.getColor(requireContext(), R.color.btn_activate_green))
                     tv.setBackgroundResource(R.drawable.bg_status_online)
-                }
+                    btnEnter.text = "Kandang Aktif"
+                    btnEnter.setBackgroundColor(
+                        ContextCompat.getColor(requireContext(), R.color.color_9)
+                    )                }
                 "Offline" -> {
                     tv.text = "Offline"
                     tv.setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
@@ -107,8 +115,11 @@ class HomeFragment : Fragment() {
                     tv.setBackgroundResource(R.drawable.bg_status_warning)
                 }
                 else -> {
-                    tv.text = ""
+                    tv.text = "-"
                     tv.background = null
+                    tvTEmp.text= "-"
+                    tvHummi.text = "-"
+                    tvAmm.text = "-"
                 }
             }
         }
@@ -192,7 +203,7 @@ class HomeFragment : Fragment() {
                     btn.isEnabled = true
                     btn.text = getString(R.string.enter_cage)
 
-                    val color = ContextCompat.getColor(requireContext(), R.color.gray)
+                    val color = ContextCompat.getColor(requireContext(), R.color.color_9)
                     btn.backgroundTintList = ColorStateList.valueOf(color)
                     btn.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
 

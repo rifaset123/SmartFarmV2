@@ -40,6 +40,9 @@ class HomeViewModel @Inject constructor(
     private val _cagesData = MutableLiveData<GetCageResponse>()
     val cagesData: LiveData<GetCageResponse> = _cagesData
 
+    private val _isCageActive = MutableLiveData<Boolean>(false)
+    var isCageActive: LiveData<Boolean> = _isCageActive
+
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
 
@@ -98,6 +101,7 @@ class HomeViewModel @Inject constructor(
                         obj.optDouble("temperature").takeIf { !it.isNaN() }?.let { _deviceTemperature.postValue(it) }
                         obj.optDouble("humidity").takeIf { !it.isNaN() }?.let { _deviceHumidity.postValue(it) }
                         obj.optDouble("ammonia").takeIf { !it.isNaN() }?.let { _deviceAmmonia.postValue(it) }
+
                         _sensorStatusText.postValue("Online")
                     }
                     msg.topic.startsWith("iot/broiler/status/") -> {
@@ -157,6 +161,7 @@ class HomeViewModel @Inject constructor(
                     // after you set the list...
                     val first = list.firstOrNull()
                     val active = first?.status?.equals("active", ignoreCase = true) == true
+                    _isCageActive.value = active
                     val deviceId = first?.deviceId
 
                     when {

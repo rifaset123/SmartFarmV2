@@ -100,7 +100,6 @@
                     android:textColor="#1F2A37"
                     android:layout_marginBottom="8dp" />
 
-                <!-- Card like the screenshot -->
                 <LinearLayout
                     android:id="@+id/predictionChipContainer"
                     android:layout_width="match_parent"

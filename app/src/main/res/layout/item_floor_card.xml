@@ -116,8 +116,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:paddingBottom="8dp"
-            android:background="@color/color_15"
             android:id="@+id/rowSensorsBelow"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -217,7 +215,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Enter"
-            android:backgroundTint="@color/button_gray"
+            android:backgroundTint="@color/color_9"
             android:textColor="@android:color/white"
             android:layout_marginTop="12dp"
             app:cornerRadius="8dp"
