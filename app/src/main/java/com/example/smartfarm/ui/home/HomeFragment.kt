@@ -172,7 +172,7 @@ class HomeFragment : Fragment() {
                     btn.isEnabled = !loading
                     btn.text = getString(R.string.activate_cage)
 
-                    val colorRes = if (loading) R.color.gray else R.color.btn_activate_green
+                    val colorRes = if (loading) R.color.gray else R.color.color_1
                     val color = ContextCompat.getColor(requireContext(), colorRes)
                     btn.backgroundTintList = ColorStateList.valueOf(color)
                     btn.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))

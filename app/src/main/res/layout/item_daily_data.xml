@@ -39,6 +39,9 @@
 
         <!-- Icons row 1 -->
         <LinearLayout
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:background="@color/color_15"
             android:id="@+id/rowSensors"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -50,6 +53,7 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <TextView
+                android:textColor="@color/color_4"
                 android:id="@+id/tvTemp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -61,6 +65,7 @@
                 android:gravity="center" />
 
             <TextView
+                android:textColor="@color/color_4"
                 android:id="@+id/tvAmmonia"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -72,6 +77,7 @@
                 android:gravity="center" />
 
             <TextView
+                android:textColor="@color/color_4"
                 android:id="@+id/tvHumidity"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -84,6 +90,8 @@
         </LinearLayout>
 
         <LinearLayout
+            android:paddingBottom="8dp"
+            android:background="@color/color_15"
             android:id="@+id/rowSensorsBelow"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -94,6 +102,7 @@
             app:layout_constraintTop_toBottomOf="@+id/rowSensors">
 
             <TextView
+                android:textColor="@color/color_4"
                 android:id="@+id/tvTempDesc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -103,6 +112,7 @@
                 android:text="Ayam mati" />
 
             <TextView
+                android:textColor="@color/color_4"
                 android:id="@+id/tvHumidityDesc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -112,6 +122,7 @@
                 android:text="Pakan" />
 
             <TextView
+                android:textColor="@color/color_4"
                 android:id="@+id/tvHSIDesc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

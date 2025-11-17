@@ -65,6 +65,9 @@
 
         <!-- Icons row 1 -->
         <LinearLayout
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:background="@color/color_15"
             android:id="@+id/rowSensors"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -82,11 +85,13 @@
                 android:layout_weight="1"
                 android:drawableTop="@drawable/ic_outline_device_thermostat_24"
                 android:drawablePadding="4dp"
-                android:text="20"
+                android:text="-"
+                android:textColor="@color/color_4"
                 android:textStyle="bold"
                 android:gravity="center" />
 
             <TextView
+                android:textColor="@color/color_4"
                 android:id="@+id/tvAmmonia"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -98,18 +103,21 @@
                 android:gravity="center" />
 
             <TextView
+                android:textColor="@color/color_4"
                 android:id="@+id/tvHumidity"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:drawableTop="@drawable/ic_outline_humidity_percentage_24"
-                android:text="20"
+                android:text="-"
                 android:textStyle="bold"
 
                 android:gravity="center" />
         </LinearLayout>
 
         <LinearLayout
+            android:paddingBottom="8dp"
+            android:background="@color/color_15"
             android:id="@+id/rowSensorsBelow"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -126,9 +134,11 @@
                 android:layout_weight="1"
                 android:drawablePadding="4dp"
                 android:gravity="center"
+                android:textColor="@color/color_4"
                 android:text="Temperatur" />
 
             <TextView
+                android:textColor="@color/color_4"
                 android:id="@+id/tvHumidityDesc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -138,6 +148,7 @@
                 android:text="Amoniak" />
 
             <TextView
+                android:textColor="@color/color_4"
                 android:id="@+id/tvHSIDesc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

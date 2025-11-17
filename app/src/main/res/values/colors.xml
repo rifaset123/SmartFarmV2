@@ -7,8 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="gray">#757575</color>
-    <color name="button_gray">#455A64</color>
+    <color name="gray">#002D95</color>
+    <color name="button_gray">#2243D3</color>
     <color name="btn_activate_green">#2E7D32</color>
     <color name="gray_400">#BDBDBD</color>
     <color name="gray_600">#757575</color>
@@ -22,5 +22,23 @@
 
     <color name="status_warning">#B26A00</color>
     <color name="status_warning_bg">#FFF3E0</color>
+
+    <color name="color_1">#FFC72E</color>
+    <color name="color_2">#5D4506</color>
+    <color name="color_3">#2C2C75</color>
+    <color name="color_4">#002D95</color>
+    <color name="color_5">#2243D3</color>
+    <color name="color_6">#CCDBFF</color>
+    <color name="color_7">#CFCFCF</color>
+    <color name="color_8">#797979</color>
+    <color name="color_9">#333333</color>
+    <color name="color_10">#000000</color>
+    <color name="color_11">#DFFCDC</color>
+    <color name="color_12">#216C15</color>
+    <color name="color_13">#FAD5D5</color>
+    <color name="color_14">#BE2121</color>
+    <color name="color_15">#E2E9FB</color>
+    <color name="color_16">#E69318</color>
+    <color name="color_17">#ECF1FA</color>
 
 </resources>
