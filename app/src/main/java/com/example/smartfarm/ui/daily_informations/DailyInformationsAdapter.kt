@@ -39,6 +39,7 @@ class DailyInformationsAdapter(
 
     fun submitList(newItems: List<GetDailyResponseItem>) {
         items = newItems
+            .sortedByDescending { it.date ?: "" }
         notifyDataSetChanged()
     }
 

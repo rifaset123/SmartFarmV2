@@ -1,6 +1,7 @@
 package com.example.smartfarm.ui.daily_informations
 
 import android.os.Bundle
+import android.transition.Fade
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +46,8 @@ class DailyInformationsFragment : Fragment() {
 
         adapter = DailyInformationsAdapter()
         binding.rvDailyData.adapter = adapter
+
+        setupTransitions()
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -114,6 +117,12 @@ class DailyInformationsFragment : Fragment() {
                 R.id.action_navigation_dailyInformationsFragment_to_dailyInputFragment, args
             )
         }
+    }
+
+    private fun setupTransitions() {
+        enterTransition = Fade()
+        exitTransition = Fade()
+        reenterTransition = Fade()
     }
 
     override fun onDestroyView() {

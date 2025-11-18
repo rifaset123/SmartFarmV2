@@ -86,6 +86,13 @@ class HomeViewModel @Inject constructor(
     private val _sensorStatusText = MutableLiveData<String?>()
     val sensorStatusText: LiveData<String?> = _sensorStatusText
 
+    private val _predictionStatus = MutableLiveData<String?>()
+    val predictionStatus: LiveData<String?> = _predictionStatus
+
+    private val _predictionTime = MutableLiveData<String?>()
+    val predictionTime: LiveData<String?> = _predictionTime
+
+
     private var lastSubscribedTopic: String? = null
     private var lastDataTopic: String? = null
     private var lastStatusTopic: String? = null
@@ -153,8 +160,8 @@ class HomeViewModel @Inject constructor(
                     _cagesData.value = response
                     val list = response.response?.filterNotNull().orEmpty()
                     _cages.value = list
-                    _cageNames.value = if (list.isEmpty()) listOf("Tidak ada kandang")
-                    else list.map { it.cageName ?: "(tanpa nama)" }
+                    _cageNames.value = if (list.isEmpty())
+                        listOf("Tidak ada kandang") else list.map { it.cageName ?: "(tanpa nama)" }
                     _isLoading.value = false
                     recomputeButtonMode()
 
@@ -163,6 +170,8 @@ class HomeViewModel @Inject constructor(
                     val active = first?.status?.equals("active", ignoreCase = true) == true
                     _isCageActive.value = active
                     val deviceId = first?.deviceId
+
+                    updatePredictionForSelectedCage()
 
                     when {
                         active && deviceId.isNullOrBlank() -> {
@@ -183,6 +192,7 @@ class HomeViewModel @Inject constructor(
                     _isLoading.value = false
                     recomputeButtonMode()
                 }
+
         }
     }
 
@@ -196,6 +206,8 @@ class HomeViewModel @Inject constructor(
         val item = currentSelectedItem()
         val active = item?.status?.equals("active", ignoreCase = true) == true
         val deviceId = item?.deviceId
+
+        updatePredictionForSelectedCage()
 
         when {
             active && deviceId.isNullOrBlank() -> {
@@ -314,6 +326,52 @@ class HomeViewModel @Inject constructor(
             _isLoading.value = false
         }
     }
+
+    private fun updatePredictionForSelectedCage() {
+        val item = currentSelectedItem() ?: run {
+            _predictionStatus.value = null
+            _predictionTime.value = null
+            return
+        }
+
+        // Ambil hanya data yang success dan punya details
+        val list = item.predictionResultData
+            .orEmpty()
+            .mapNotNull { it }                              // buang null
+            .filter { it.predictionStatus == "success" && it.predictionDetails != null }
+
+        if (list.isEmpty()) {
+            _predictionStatus.value = null
+            _predictionTime.value = null
+            return
+        }
+
+        // Ambil prediksi paling baru (berdasarkan predictedAt ISO string)
+        val latest = list.maxByOrNull { it.predictedAt ?: "" } ?: run {
+            _predictionStatus.value = null
+            _predictionTime.value = null
+            return
+        }
+
+        // normal / abnormal (dari PredictionDetailsDto.predictionResult)
+        val result = latest.predictionDetails?.predictionResult
+        _predictionStatus.value = result   // simpan raw, nanti di UI kita format
+
+        // Format jam dari predictedAt → HH:mm
+        val timeText = latest.predictedAt?.let { raw ->
+            try {
+                val odt = java.time.OffsetDateTime.parse(raw)
+                val t = odt.toLocalTime()
+                String.format("%02d:%02d", t.hour, t.minute)
+            } catch (e: Exception) {
+                null
+            }
+        }
+
+        _predictionTime.value = timeText
+    }
+
+
 
     private fun clearRealtimeUiAndUnsubscribe() {
         _deviceTemperature.value = 0.0

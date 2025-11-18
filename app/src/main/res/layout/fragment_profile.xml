@@ -292,6 +292,8 @@
                 android:onClick="logout"
                 android:text="logout test"
                 android:backgroundTint="@color/button_gray"
+                android:textColor="@android:color/white"
+                app:cornerRadius="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginBottom="30dp"

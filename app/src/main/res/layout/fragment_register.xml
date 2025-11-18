@@ -257,7 +257,9 @@
                 android:layout_height="wrap_content"
                 android:text="Daftar"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
+                android:backgroundTint="@color/button_gray"
+                android:textColor="@android:color/white"
+                app:cornerRadius="8dp"
                 app:backgroundTint="@color/black" />
 
             <ProgressBar

@@ -63,6 +63,7 @@ class HomeFragment : Fragment() {
         setupSpinner()
         setupObservers()
         orchestrateLoadingFlow()
+        setupSensorCard()
         setupDailyCard()
         binding.includedDataHarian.btnEnterData.setOnClickListener {
             val cageId = homeViewModel.getSelectedCageId()
@@ -124,6 +125,46 @@ class HomeFragment : Fragment() {
             }
         }
 
+        homeViewModel.predictionStatus.observe(viewLifecycleOwner) { status ->
+            val container = binding.predictionChipContainer
+            val tvStatus = binding.tvPredStatus
+
+            if (status.isNullOrBlank()) {
+                // kalau tidak ada prediksi
+                tvStatus.text = "Tidak Dapapt Diprediksi"
+                tvStatus.setBackgroundResource(R.drawable.bg_prediction_chip_unpredicted)
+                container.setBackgroundResource(R.drawable.bg_prediction_container_unpredictable)
+            } else {
+                container.visibility = View.VISIBLE
+                when (status.lowercase()) {
+                    "normal" -> {
+                        tvStatus.text = "Normal"
+                        tvStatus.setBackgroundResource(R.drawable.bg_prediction_chip)
+                        tvStatus.setTextColor(
+                            ContextCompat.getColor(requireContext(), android.R.color.white)
+                        )
+                    }
+                    "abnormal" -> {
+                        tvStatus.text = "Abnormal"
+                        // kalau mau beda warna, bikin drawable lain
+                        // atau ganti tint
+                        tvStatus.setBackgroundResource(R.drawable.bg_prediction_chip_abnormal)
+                        container.setBackgroundResource(R.drawable.bg_prediction_container_abnormal)
+                        tvStatus.setTextColor(
+                            ContextCompat.getColor(requireContext(), android.R.color.white)
+                        )
+                    }
+                    else -> {
+                        tvStatus.text = status
+                        tvStatus.setBackgroundResource(R.drawable.bg_prediction_chip)
+                    }
+                }
+            }
+        }
+
+        homeViewModel.predictionTime.observe(viewLifecycleOwner) { time ->
+            binding.tvPredTime.text = time ?: "-"
+        }
 
 
         return binding.root
@@ -253,7 +294,7 @@ class HomeFragment : Fragment() {
             ?: run { homeViewModel.refreshToday(cageId, null) }
     }
 
-    private fun setupDailyCard(){
+    private fun setupSensorCard(){
         homeViewModel.deviceTemperature.observe(viewLifecycleOwner) { temp ->
             binding.includedSensorKandang.tvTemp.text = temp?.toString() ?: "-"
         }
@@ -263,8 +304,18 @@ class HomeFragment : Fragment() {
         homeViewModel.deviceAmmonia.observe(viewLifecycleOwner) { amm ->
             binding.includedSensorKandang.tvAmmonia.text = amm?.toString() ?: "-"
         }
+    }
 
-
+    private fun setupDailyCard(){
+        homeViewModel.todayFood.observe(viewLifecycleOwner) { temp ->
+            binding.includedDataHarian.tvTemp.text = temp?.toString() ?: "-"
+        }
+        homeViewModel.todayDrink.observe(viewLifecycleOwner) { hum ->
+            binding.includedDataHarian.tvHumidity.text = hum?.toString() ?: "-"
+        }
+        homeViewModel.todayDeath.observe(viewLifecycleOwner) { amm ->
+            binding.includedDataHarian.tvAmmonia.text = amm?.toString() ?: "-"
+        }
     }
 
     private fun orchestrateLoadingFlow() {
