@@ -4,5 +4,5 @@ import com.example.smartfarm.data.remote.response.NotifResponseItem
 
 interface NotificationRepository {
     suspend fun list(bearerToken: String?): Result<List<NotifResponseItem?>>
-    suspend fun markRead(bearerToken: String?, id: String?): Result<Unit>
+    suspend fun markRead(bearerToken: String?, id: List<String>): Result<Unit>
 }

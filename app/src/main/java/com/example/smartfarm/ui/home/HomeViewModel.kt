@@ -371,7 +371,9 @@ class HomeViewModel @Inject constructor(
         _predictionTime.value = timeText
     }
 
-
+    fun stopMqttForCurrentCage() {
+        clearRealtimeUiAndUnsubscribe()
+    }
 
     private fun clearRealtimeUiAndUnsubscribe() {
         _deviceTemperature.value = 0.0

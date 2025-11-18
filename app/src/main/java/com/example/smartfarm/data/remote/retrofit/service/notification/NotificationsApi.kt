@@ -1,5 +1,7 @@
 package com.example.smartfarm.data.remote.retrofit.service.notification
 
+import com.example.smartfarm.data.remote.response.MarkNotificationsReadRequest
+import com.example.smartfarm.data.remote.response.MarkNotificationsReadResponse
 import com.example.smartfarm.data.remote.response.NotificationsResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -15,9 +17,9 @@ interface NotificationsApi {
     ): NotificationsResponse
 
     @POST("api/update-read-status-notifications")
-    suspend fun markAsRead(
+    suspend fun markNotificationsRead(
         @Header("Authorization") bearer: String? = null,
         @Header("X-User-Offset") userOffset: String = "+07:00",
-        @Body body: Map<String, List<String>>
-    ): Response<Unit>
+        @Body body: MarkNotificationsReadRequest
+    ): MarkNotificationsReadResponse
 }

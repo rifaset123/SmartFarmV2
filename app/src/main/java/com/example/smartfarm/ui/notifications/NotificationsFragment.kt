@@ -68,4 +68,9 @@ class NotificationsFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    override fun onStop() {
+        super.onStop()
+        vm.markAllRead()
+    }
 }

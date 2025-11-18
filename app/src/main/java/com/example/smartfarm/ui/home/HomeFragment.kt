@@ -465,7 +465,13 @@ class HomeFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
+        homeViewModel.stopMqttForCurrentCage()
         _binding = null
+        super.onDestroyView()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        homeViewModel.stopMqttForCurrentCage()
     }
 }

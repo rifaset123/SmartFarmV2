@@ -44,9 +44,28 @@ class NotificationsViewModel @Inject constructor(
     fun markRead(id: String?) = viewModelScope.launch {
         if (id == null) return@launch
 
-        // optional: call ke API mark read di repo, lalu update UI lokal
         _items.value = _items.value?.map {
-            if (it.id == id) it.copy(readStatus = true) else it
+            it
         }
+    }
+
+    fun markAllRead() = viewModelScope.launch {
+        val current = _items.value.orEmpty()
+        val unreadIds = current
+            .filter { it.readStatus != true }
+            .mapNotNull { it.id }
+
+        if (unreadIds.isEmpty()) return@launch
+
+        repo.markRead(bearer, unreadIds)
+            .onSuccess {
+                // update UI lokal biar langsung berubah warna
+                _items.value = current.map {
+                    if (it.id in unreadIds) it.copy(readStatus = true) else it
+                }
+            }
+            .onFailure { e ->
+                error.value = e.message
+            }
     }
 }
