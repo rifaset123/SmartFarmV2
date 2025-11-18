@@ -66,16 +66,36 @@ class HomeFragment : Fragment() {
         setupSensorCard()
         setupDailyCard()
         binding.includedDataHarian.btnEnterData.setOnClickListener {
+            val mode = homeViewModel.primaryButtonMode.value
+
+            // kalau kandang belum diaktifkan
+            if (mode != PrimaryButtonMode.ENTER) {
+                toast("Aktifkan kandang terlebih dahulu")
+                return@setOnClickListener
+            }
+
             val cageId = homeViewModel.getSelectedCageId()
             val cageName = homeViewModel.selectedCageName()
+
+            if (cageId.isNullOrBlank()) {
+                toast("ID kandang tidak ditemukan")
+                return@setOnClickListener
+            }
+
             val args = bundleOf(
                 "cageId" to cageId,
                 "cageName" to cageName
             )
-            Log.d("HomeFragment", "Navigating to DailyInformationsFragment with cageId: $cageId, cageName: $cageName")
-            findNavController().navigate(R.id.action_navigation_home_to_dailyInformationsFragment, args)
-
+            Log.d(
+                "HomeFragment",
+                "Navigating to DailyInformationsFragment with cageId: $cageId, cageName: $cageName"
+            )
+            findNavController().navigate(
+                R.id.action_navigation_home_to_dailyInformationsFragment,
+                args
+            )
         }
+
         binding.btnAddCoop.setOnClickListener {
             findNavController().navigate(R.id.action_navigation_home_to_addCoopFragment)
         }
@@ -95,6 +115,7 @@ class HomeFragment : Fragment() {
             val tvAmm = binding.includedSensorKandang.tvAmmonia
             val tvHummi = binding.includedSensorKandang.tvHumidity
             val btnEnter = binding.includedSensorKandang.btnEnter
+            val tvLastUp = binding.includedSensorKandang.tvLastUpdate
 
             when (status) {
                 "Online" -> {
@@ -114,6 +135,7 @@ class HomeFragment : Fragment() {
                     tv.text = "Device not found"
                     tv.setTextColor(ContextCompat.getColor(requireContext(), R.color.status_warning))
                     tv.setBackgroundResource(R.drawable.bg_status_warning)
+                    tvLastUp.visibility = View.GONE
                 }
                 else -> {
                     tv.text = "-"
@@ -121,6 +143,7 @@ class HomeFragment : Fragment() {
                     tvTEmp.text= "-"
                     tvHummi.text = "-"
                     tvAmm.text = "-"
+                    tvLastUp.visibility = View.GONE
                 }
             }
         }
@@ -140,6 +163,7 @@ class HomeFragment : Fragment() {
                     "normal" -> {
                         tvStatus.text = "Normal"
                         tvStatus.setBackgroundResource(R.drawable.bg_prediction_chip)
+                        container.setBackgroundResource(R.drawable.bg_prediction_container)
                         tvStatus.setTextColor(
                             ContextCompat.getColor(requireContext(), android.R.color.white)
                         )

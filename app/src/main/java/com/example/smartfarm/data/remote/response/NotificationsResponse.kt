@@ -1,58 +1,55 @@
 package com.example.smartfarm.data.remote.response
 
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
+import com.google.gson.annotations.SerializedName
 
-@Serializable
 data class NotificationsResponse(
 
-	@SerialName("response")
+	@field:SerializedName("response")
 	val response: List<NotifResponseItem?>? = null,
 
-	@SerialName("messages")
+	@field:SerializedName("messages")
 	val messages: String? = null
 )
 
-@Serializable
 data class NotifResponseItem(
 
-	@SerialName("prediction_detail")
+	// PERHATIKAN: plural 'prediction_details'
+	@field:SerializedName("prediction_details")
 	val predictionDetail: List<PredictionDetailItem?>? = null,
 
-	@SerialName("broiler_prediction_id")
+	@field:SerializedName("broiler_prediction_id")
 	val broilerPredictionId: String? = null,
 
-	@SerialName("cage_id")
+	@field:SerializedName("cage_id")
 	val cageId: String? = null,
 
-	@SerialName("created_at")
+	@field:SerializedName("created_at")
 	val createdAt: String? = null,
 
-	@SerialName("read_status")
+	@field:SerializedName("read_status")
 	val readStatus: Boolean? = null,
 
-	@SerialName("id")
+	@field:SerializedName("id")
 	val id: String? = null,
 
-	@SerialName("cage_name")
+	@field:SerializedName("cage_name")
 	val cageName: String? = null
 )
 
-@Serializable
 data class PredictionDetailItem(
 
-	@SerialName("ammo")
-	val ammo: Any? = null,
+	@field:SerializedName("ammo")
+	val ammo: Double? = null,
 
-	@SerialName("device_id")
+	@field:SerializedName("device_id")
 	val deviceId: String? = null,
 
-	@SerialName("prediction_result")
+	@field:SerializedName("prediction_result")
 	val predictionResult: String? = null,
 
-	@SerialName("temperature")
-	val temperature: Any? = null,
+	@field:SerializedName("temperature")
+	val temperature: Double? = null,
 
-	@SerialName("humidity")
-	val humidity: Any? = null
+	@field:SerializedName("humidity")
+	val humidity: Double? = null
 )

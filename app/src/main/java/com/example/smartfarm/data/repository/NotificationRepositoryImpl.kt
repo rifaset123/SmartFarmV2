@@ -1,5 +1,6 @@
 package com.example.smartfarm.data.repository
 
+import com.example.smartfarm.data.remote.response.NotifResponseItem
 import com.example.smartfarm.data.remote.retrofit.service.notification.NotificationsApi
 import javax.inject.Inject
 
@@ -7,9 +8,13 @@ class NotificationRepositoryImpl @Inject constructor(
     private val api: NotificationsApi
 ) : NotificationRepository {
 
-    override suspend fun list(bearerToken: String?) = runCatching {
-        val auth = bearerToken?.let { "Bearer $it" }
-        api.getNotifications(auth).response.orEmpty()
+    override suspend fun list(bearerToken: String?): Result<List<NotifResponseItem>> = runCatching {
+        val bearerHeader = bearerToken?.let { "Bearer $it" }
+        val res = api.getNotifications(bearerHeader)
+        res.response
+            ?.filterNotNull()
+            ?.sortedByDescending { it.createdAt }
+            ?: emptyList()
     }
 
     override suspend fun markRead(bearerToken: String?, id: String?) = runCatching {
