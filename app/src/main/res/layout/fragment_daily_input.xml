@@ -13,19 +13,42 @@
 
         <!-- Header nama kandang -->
         <TextView
+            android:id="@+id/tvKandangTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Masukkan Data Harian"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tvNamaKandang" />
+
+        <TextView
             android:id="@+id/tvNamaKandang"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Kandang Ayam A"
             android:textSize="20sp"
             android:textStyle="bold"
-
             android:textColor="@android:color/black"
             android:gravity="center"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvKandangTitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:paddingBottom="12dp" />
+
+
+        <ImageView
+            android:id="@+id/storyset_adddata"
+            android:layout_width="wrap_content"
+            android:layout_height="300dp"
+            android:src="@drawable/set_data_add"
+            app:layout_constraintTop_toBottomOf="@id/tvNamaKandang"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tilTanggal"/>
 
         <!-- Tanggal -->
         <com.google.android.material.textfield.TextInputLayout
@@ -34,7 +57,7 @@
             android:layout_height="wrap_content"
             android:hint="Tanggal"
             app:endIconMode="custom"
-            app:layout_constraintTop_toBottomOf="@id/tvNamaKandang"
+            app:layout_constraintTop_toBottomOf="@id/storyset_adddata"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 

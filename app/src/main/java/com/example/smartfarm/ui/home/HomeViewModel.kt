@@ -92,6 +92,8 @@ class HomeViewModel @Inject constructor(
     private val _predictionTime = MutableLiveData<String?>()
     val predictionTime: LiveData<String?> = _predictionTime
 
+    private val _predictionError = MutableLiveData<Int?>()
+    val predictionError: LiveData<Int?> = _predictionError
 
     private var lastSubscribedTopic: String? = null
     private var lastDataTopic: String? = null
@@ -207,6 +209,7 @@ class HomeViewModel @Inject constructor(
         val active = item?.status?.equals("active", ignoreCase = true) == true
         val deviceId = item?.deviceId
 
+        _isCageActive.value = active
         updatePredictionForSelectedCage()
 
         when {
@@ -223,23 +226,34 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun subscribeToDevice(deviceId: String) {
-        // ensure stale values are gone even for “offline” kandang
+        // pastikan realtime value bersih sebelum mulai
         clearRealtimeValues()
 
         val dataTopic = "iot/broiler/data/$deviceId"
         val statusTopic = "iot/broiler/status/$deviceId"
 
-        // unsubscribe previous topics if changed (as you already do)
-        if (lastDataTopic != null && lastDataTopic != dataTopic) mqtt.unsubscribe(lastDataTopic!!)
-        if (lastStatusTopic != null && lastStatusTopic != statusTopic) mqtt.unsubscribe(lastStatusTopic!!)
+        // lepas topic lama kalau berbeda
+        if (lastDataTopic != null && lastDataTopic != dataTopic) {
+            mqtt.unsubscribe(lastDataTopic!!)
+        }
+        if (lastStatusTopic != null && lastStatusTopic != statusTopic) {
+            mqtt.unsubscribe(lastStatusTopic!!)
+        }
 
-        // subscribe new
-        if (lastDataTopic != dataTopic) { mqtt.subscribe(dataTopic); lastDataTopic = dataTopic }
-        if (lastStatusTopic != statusTopic) { mqtt.subscribe(statusTopic); lastStatusTopic = statusTopic }
+        // subscribe ke topic baru
+        if (lastDataTopic != dataTopic) {
+            mqtt.subscribe(dataTopic)
+            lastDataTopic = dataTopic
+        }
+        if (lastStatusTopic != statusTopic) {
+            mqtt.subscribe(statusTopic)
+            lastStatusTopic = statusTopic
+        }
 
-        // default label for active+device is Offline until proven Online
+        // default: aktif + punya device tapi belum ada data → anggap Offline dulu
         _sensorStatusText.value = "Offline"
     }
+
 
     private fun currentSelectedItem(): ResponseItem? {
         val idx = _selectedCoop.value ?: 0
@@ -328,37 +342,57 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun updatePredictionForSelectedCage() {
+        // clear old error first
+        _predictionError.value = null
+
         val item = currentSelectedItem() ?: run {
             _predictionStatus.value = null
             _predictionTime.value = null
             return
         }
 
-        // Ambil hanya data yang success dan punya details
-        val list = item.predictionResultData
-            .orEmpty()
-            .mapNotNull { it }                              // buang null
-            .filter { it.predictionStatus == "success" && it.predictionDetails != null }
+        val rawList = item.predictionResultData.orEmpty().mapNotNull { it }
 
-        if (list.isEmpty()) {
+        if (rawList.isEmpty()) {
             _predictionStatus.value = null
             _predictionTime.value = null
+            _predictionError.value = null
             return
         }
 
-        // Ambil prediksi paling baru (berdasarkan predictedAt ISO string)
-        val latest = list.maxByOrNull { it.predictedAt ?: "" } ?: run {
+        // 1. Ambil entry TERBARU dari semua data (baik success maupun failed)
+        val latestRaw = rawList.maxByOrNull { it.predictedAt ?: "" }!!
+
+        // simpan error code (1 / 2 / null)
+        _predictionError.value = latestRaw.error
+
+        // 2. Baru cari data prediksi yang success + punya details
+        val successList = rawList.filter {
+            it.predictionStatus == "success" && it.predictionDetails != null
+        }
+
+        if (successList.isEmpty()) {
+            // tidak ada prediksi sukses, tapi error code sudah di-set di atas
             _predictionStatus.value = null
-            _predictionTime.value = null
+            _predictionTime.value = latestRaw.predictedAt?.let { raw ->
+                try {
+                    val odt = java.time.OffsetDateTime.parse(raw)
+                    val t = odt.toLocalTime()
+                    String.format("%02d:%02d", t.hour, t.minute)
+                } catch (e: Exception) {
+                    null
+                }
+            }
             return
         }
 
-        // normal / abnormal (dari PredictionDetailsDto.predictionResult)
-        val result = latest.predictionDetails?.predictionResult
-        _predictionStatus.value = result   // simpan raw, nanti di UI kita format
+        // 3. Kalau ada success, pakai yang latest untuk status & time
+        val latestSuccess = successList.maxByOrNull { it.predictedAt ?: "" }!!
 
-        // Format jam dari predictedAt → HH:mm
-        val timeText = latest.predictedAt?.let { raw ->
+        val result = latestSuccess.predictionDetails?.predictionResult
+        _predictionStatus.value = result   // normal / abnormal
+
+        val timeText = latestSuccess.predictedAt?.let { raw ->
             try {
                 val odt = java.time.OffsetDateTime.parse(raw)
                 val t = odt.toLocalTime()
@@ -367,7 +401,6 @@ class HomeViewModel @Inject constructor(
                 null
             }
         }
-
         _predictionTime.value = timeText
     }
 

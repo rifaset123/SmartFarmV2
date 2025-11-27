@@ -10,6 +10,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.example.smartfarm.databinding.ActivityMainBinding
+import com.example.smartfarm.databinding.CustomToolbarBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,10 +26,10 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val topBar = binding.topBar
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         navController = navHostFragment.navController
-
 
         val navView: BottomNavigationView = binding.navView
 
@@ -44,6 +45,16 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val hideOn = setOf(R.id.loginFragment, R.id.registerFragment,  R.id.navigation_dailyInformationsFragment, R.id.dailyInputFragment, R.id.addCoopFragment)
             navView.visibility = if (destination.id in hideOn) View.GONE else View.VISIBLE
+
+            val showTopBarOn = setOf(
+                R.id.navigation_home,
+                R.id.addCoopFragment,
+                R.id.navigation_profile,
+                R.id.navigation_notifications,
+            )
+
+            binding.topBar.root.visibility =
+                if (destination.id in showTopBarOn) View.VISIBLE else View.GONE
         }
     }
 

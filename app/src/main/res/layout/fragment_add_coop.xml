@@ -27,13 +27,23 @@
             app:layout_constraintHorizontal_bias="0.5"
             android:layout_marginBottom="20dp"/>
 
+        <ImageView
+            android:id="@+id/storyset_addcoop"
+            android:layout_width="wrap_content"
+            android:layout_height="300dp"
+            android:src="@drawable/set_robot_add"
+            app:layout_constraintTop_toBottomOf="@id/textTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/inputCageName"/>
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/inputCageName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:paddingBottom="20dp"
-            app:layout_constraintTop_toBottomOf="@id/textTitle"
+            app:layout_constraintTop_toBottomOf="@id/storyset_addcoop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 

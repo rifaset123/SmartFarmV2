@@ -104,40 +104,59 @@
                     android:id="@+id/predictionChipContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_prediction_container"
                     android:paddingHorizontal="16dp"
-                    android:paddingVertical="10dp"
-                    android:background="@drawable/bg_prediction_container">
+                    android:paddingVertical="10dp">
 
-                    <!-- Left pill Normal -->
+                    <!-- Row: chip + time -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <!-- Left pill Normal -->
+                        <TextView
+                            android:id="@+id/tvPredStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_prediction_chip"
+                            android:paddingHorizontal="18dp"
+                            android:paddingVertical="8dp"
+                            android:text="Normal"
+                            android:textColor="@android:color/white"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <!-- Spacer -->
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
+
+                        <!-- Right time text -->
+                        <TextView
+                            android:id="@+id/tvPredTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="13:45"
+                            android:textColor="#111827"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <!-- Small text at bottom (inside the same box) -->
                     <TextView
-                        android:id="@+id/tvPredStatus"
+                        android:id="@+id/tvPredSubtitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_prediction_chip"
-                        android:paddingHorizontal="18dp"
-                        android:paddingVertical="8dp"
-                        android:text="Normal"
-                        android:textColor="@android:color/white"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:layout_marginTop="6dp"
+                        android:text="Informasi harian tidak ditemukan."
+                        android:textColor="#4B5563"
+                        android:textSize="12sp" />
 
-                    <!-- Spacer -->
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="1" />
-
-                    <!-- Right time text -->
-                    <TextView
-                        android:id="@+id/tvPredTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="13:45"
-                        android:textColor="#111827"
-                        android:textSize="16sp" />
                 </LinearLayout>
+
             </LinearLayout>
 
             <!-- Bottom divider -->

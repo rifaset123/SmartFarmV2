@@ -45,7 +45,7 @@ data class PredictionResultItem(
 	@field:SerializedName("prediction_status")
 	val predictionStatus: String? = null,
 	@field:SerializedName("error")
-	val error: String? = null
+	val error: Int? = null
 ) : Parcelable
 
 @Parcelize

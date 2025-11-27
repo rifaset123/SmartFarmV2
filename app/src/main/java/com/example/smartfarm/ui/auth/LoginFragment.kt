@@ -87,7 +87,7 @@ class LoginFragment : Fragment() {
                 is UiState.Success -> {
                     binding.loginBtn.setText("Login")
                     loadingDialogBar.hideDialog()
-                    toast(state.data)
+                    toast("Berhasil masuk!")
                     findNavController().navigate(R.id.action_loginFragment_to_home_navigation)
                 }
             }

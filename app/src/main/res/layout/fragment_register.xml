@@ -12,28 +12,44 @@
         android:paddingTop="?attr/actionBarSize"
         android:layout_height="wrap_content">
 
+        <!-- Logo -->
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="16dp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/app_logo_full"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Title -->
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:text="Daftar"
+            android:layout_marginTop="12dp"
+            android:text="SmartFarm"
             android:textColor="@color/black"
-            android:textSize="22dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/logo"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
+        <!-- Subtitle -->
         <TextView
             android:id="@+id/headline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SmartFarm v2 prototype"
+            android:layout_marginTop="4dp"
+            android:text="Daftar dan mulai pantau kandang ayammu"
             android:textColor="@color/black"
-            android:textSize="14dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@id/name"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/name" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
             android:id="@+id/first_name_label"
@@ -56,6 +72,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
+            android:hint="Masukkan Nama Lengkap!"
             android:ems="10"
             android:inputType="textPersonName"
             android:textColor="@color/black"
@@ -87,6 +104,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
+            android:hint="Masukkan Provinsi!"
             android:ems="10"
             android:inputType="textPersonName"
             android:textColor="@color/black"
@@ -118,6 +136,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
+            android:hint="Masukkan Kota!"
             android:ems="10"
             android:inputType="textPersonName"
             android:textColor="@color/black"
@@ -150,6 +169,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:ems="10"
+            android:hint="+62xxxxxxxxxxx"
             android:inputType="textPersonName"
             android:textColor="@color/black"
             android:background="@drawable/bg_black_white_rect"
@@ -177,6 +197,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:hint="contohemail@testmail.com"
             android:inputType="textEmailAddress"
             android:textColor="@color/black"
             android:background="@drawable/bg_black_white_rect"
@@ -206,6 +227,7 @@
             android:layout_marginTop="8dp"
             android:inputType="textPassword"
             android:textColor="@color/black"
+            android:hint="Password minimal 8 karakter"
             android:background="@drawable/bg_black_white_rect"
             android:textSize="14dp"
             app:layout_constraintEnd_toEndOf="@+id/email_et"
@@ -232,6 +254,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:inputType="textPassword"
+            android:hint="Password harus sama!"
             android:textColor="@color/black"
             android:background="@drawable/bg_black_white_rect"
             android:textSize="14dp"

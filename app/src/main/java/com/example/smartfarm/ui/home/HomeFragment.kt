@@ -151,12 +151,52 @@ class HomeFragment : Fragment() {
         homeViewModel.predictionStatus.observe(viewLifecycleOwner) { status ->
             val container = binding.predictionChipContainer
             val tvStatus = binding.tvPredStatus
+            val tvPredSubtitle = binding.tvPredSubtitle
 
+            // ambil error code terbaru dari ViewModel (1 / 2 / null)
+            val errorCode = homeViewModel.predictionError.value
+
+            // === PRIORITAS: kalau ada error, tampilkan state error dulu ===
+            when (errorCode) {
+                1 -> {
+                    container.visibility = View.VISIBLE
+                    tvStatus.text = "Tidak Dapat Diprediksi!"
+                    binding.tvPredSubtitle.text = "Informasi Harian Belum Diinput!"
+                    tvStatus.setBackgroundResource(R.drawable.bg_prediction_chip_unpredicted)
+                    container.setBackgroundResource(R.drawable.bg_prediction_container_unpredictable)
+                    tvStatus.setTextColor(
+                        ContextCompat.getColor(requireContext(), android.R.color.white)
+                    )
+
+                    tvPredSubtitle.visibility = View.VISIBLE
+                    return@observe   // jangan lanjut ke logic normal/abnormal
+                }
+                2 -> {
+                    container.visibility = View.VISIBLE
+                    tvStatus.text = "Tidak Dapat Diprediksi!"
+                    binding.tvPredSubtitle.text = "Device Offline!"
+                    // bisa pakai drawable khusus kalau ada, atau reuse yang no_prediction
+                    tvStatus.setBackgroundResource(R.drawable.bg_prediction_chip_unpredicted)
+                    container.setBackgroundResource(R.drawable.bg_prediction_container_unpredictable)
+                    tvStatus.setTextColor(
+                        ContextCompat.getColor(requireContext(), android.R.color.white)
+                    )
+
+                    tvPredSubtitle.visibility = View.VISIBLE
+                    return@observe   // stop di sini juga
+                }
+            }
+
+            // === TIDAK ADA ERROR -> pakai status normal / abnormal / tidak ada prediksi ===
             if (status.isNullOrBlank()) {
-                // kalau tidak ada prediksi
-                tvStatus.text = "Tidak Dapapt Diprediksi"
-                tvStatus.setBackgroundResource(R.drawable.bg_prediction_chip_unpredicted)
-                container.setBackgroundResource(R.drawable.bg_prediction_container_unpredictable)
+                tvStatus.text = "Tidak Ada Prediksi"
+                tvStatus.setBackgroundResource(R.drawable.bg_prediction_chip_no_prediction)
+                container.setBackgroundResource(R.drawable.bg_prediction_container_no_prediction)
+                tvStatus.setTextColor(
+                    ContextCompat.getColor(requireContext(), android.R.color.white)
+                )
+
+                tvPredSubtitle.visibility = View.GONE   // atau mau isi pesan lain
             } else {
                 container.visibility = View.VISIBLE
                 when (status.lowercase()) {
@@ -167,28 +207,44 @@ class HomeFragment : Fragment() {
                         tvStatus.setTextColor(
                             ContextCompat.getColor(requireContext(), android.R.color.white)
                         )
+                        tvPredSubtitle.visibility = View.GONE
                     }
                     "abnormal" -> {
                         tvStatus.text = "Abnormal"
-                        // kalau mau beda warna, bikin drawable lain
-                        // atau ganti tint
                         tvStatus.setBackgroundResource(R.drawable.bg_prediction_chip_abnormal)
                         container.setBackgroundResource(R.drawable.bg_prediction_container_abnormal)
                         tvStatus.setTextColor(
                             ContextCompat.getColor(requireContext(), android.R.color.white)
                         )
+                        tvPredSubtitle.visibility = View.GONE
                     }
                     else -> {
-                        tvStatus.text = status
-                        tvStatus.setBackgroundResource(R.drawable.bg_prediction_chip)
+                        tvStatus.text = "-"
+                        tvPredSubtitle.visibility = View.GONE
                     }
                 }
             }
         }
 
+
         homeViewModel.predictionTime.observe(viewLifecycleOwner) { time ->
             binding.tvPredTime.text = time ?: "-"
         }
+
+//        homeViewModel.predictionError.observe(viewLifecycleOwner) { msg ->
+//            Log.d("testt", "$msg")
+//            when (msg){
+//                1 -> {
+//                    binding.tvPredSubtitle.text = "Informasi Harian Belum Diinput!"
+//                }
+//                2 -> {
+//                    binding.tvPredSubtitle.text = "Device Offline!"
+//                }
+//                else -> {
+//                    binding.tvPredSubtitle.visibility = View.GONE
+//                }
+//            }
+//        }
 
 
         return binding.root

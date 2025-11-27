@@ -7,28 +7,44 @@
     android:paddingTop="?attr/actionBarSize"
     tools:context=".ui.auth.LoginFragment">
 
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:text="Masuk"
-        android:textColor="@color/black"
-        android:textSize="22dp"
-        app:layout_constraintEnd_toEndOf="parent"
+    <!-- Logo -->
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/app_logo_full"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Title -->
     <TextView
-        android:id="@+id/headline"
+        android:id="@+id/title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SmartFarm v2 prototype"
+        android:layout_marginTop="12dp"
+        android:text="SmartFarm"
         android:textColor="@color/black"
-        android:textSize="14dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/logo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name" />
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Subtitle -->
+    <TextView
+        android:id="@+id/subtitle_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Aplikasi Monitoring Kandang Ayam"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/title_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/email_label"
@@ -40,7 +56,7 @@
         android:textColor="@color/black"
         android:textSize="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headline" />
+        app:layout_constraintTop_toBottomOf="@+id/subtitle_text" />
 
     <EditText
         android:id="@+id/email_et"
@@ -56,6 +72,7 @@
         android:background="@drawable/bg_black_white_rect"
         android:textColor="@color/black"
         android:textSize="14dp"
+        android:hint="Masukkan Email!"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -81,6 +98,7 @@
         android:layout_marginTop="8dp"
         android:inputType="textPassword"
         android:textColor="@color/black"
+        android:hint="Masukkan Password!"
         android:background="@drawable/bg_black_white_rect"
         android:textSize="14dp"
         app:layout_constraintEnd_toEndOf="@+id/email_et"
@@ -106,7 +124,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:padding="5dp"
-        android:text="Belum punya akun? Register!"
+        android:text="Belum punya akun? Daftar disini!"
         android:textColor="@color/black"
         android:textSize="16dp"
         app:layout_constraintEnd_toEndOf="@+id/email_et"

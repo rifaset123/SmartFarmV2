@@ -134,6 +134,7 @@
                 android:drawablePadding="4dp"
                 android:gravity="center"
                 android:textColor="@color/color_4"
+                android:paddingBottom="6dp"
                 android:text="Temperatur" />
 
             <TextView
@@ -143,6 +144,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:drawablePadding="4dp"
+                android:paddingBottom="6dp"
                 android:gravity="center"
                 android:text="Amoniak" />
 
@@ -150,6 +152,7 @@
                 android:textColor="@color/color_4"
                 android:id="@+id/tvHSIDesc"
                 android:layout_width="0dp"
+                android:paddingBottom="6dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
