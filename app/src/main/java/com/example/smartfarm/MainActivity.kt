@@ -1,6 +1,7 @@
 package com.example.smartfarm
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
@@ -11,13 +12,23 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.example.smartfarm.databinding.ActivityMainBinding
 import com.example.smartfarm.databinding.CustomToolbarBinding
+import com.example.smartfarm.mqtt.MqttNotificationHandler
+import com.example.smartfarm.util.AppNotifier
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     lateinit var navController: NavController
+
+    @Inject
+    lateinit var mqttNotifHandler: MqttNotificationHandler
+
+    @Inject
+    lateinit var notifier: AppNotifier
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +37,6 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val topBar = binding.topBar
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         navController = navHostFragment.navController
@@ -56,6 +66,26 @@ class MainActivity : AppCompatActivity() {
             binding.topBar.root.visibility =
                 if (destination.id in showTopBarOn) View.VISIBLE else View.GONE
         }
+
+        val user = FirebaseAuth.getInstance().currentUser
+        val userId = user?.uid   // atau pakai user_id dari backend kamu
+
+        if (userId != null) {
+            Log.d("MQTT_NOTIF", "Starting mqtt notif for userId=$userId")
+            mqttNotifHandler.start(userId)
+        } else {
+            Log.d("MQTT_NOTIF", "User is null, mqtt notif not started")
+        }
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val user = FirebaseAuth.getInstance().currentUser
+        val userId = user?.uid
+        if (userId != null) {
+            mqttNotifHandler.start(userId)
+        }
     }
 
     override fun onBackPressed() {
@@ -76,5 +106,10 @@ class MainActivity : AppCompatActivity() {
         if (!handled) {
             super.onBackPressed()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+//        mqttNotifHandler.stop()
     }
 }

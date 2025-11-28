@@ -53,6 +53,7 @@ class MqttSyncManager @Inject constructor(
         client.setCallback(object : MqttCallback {
             override fun messageArrived(topic: String?, message: MqttMessage?) {
                 if (topic != null && message != null) {
+                    Log.d("MQTT_RAW", "arrived topic=$topic payload=${message.toString()}")
                     _messages.tryEmit(
                         MqttMsg(
                             topic,
