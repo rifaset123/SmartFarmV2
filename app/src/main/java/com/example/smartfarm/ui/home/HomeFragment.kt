@@ -152,6 +152,8 @@ class HomeFragment : Fragment() {
             val container = binding.predictionChipContainer
             val tvStatus = binding.tvPredStatus
             val tvPredSubtitle = binding.tvPredSubtitle
+            val tvPredNoSensor = binding.tvPredNoSensor
+            val tvPredTime = binding.tvPredTime
 
             // ambil error code terbaru dari ViewModel (1 / 2 / null)
             val errorCode = homeViewModel.predictionError.value
@@ -167,7 +169,8 @@ class HomeFragment : Fragment() {
                     tvStatus.setTextColor(
                         ContextCompat.getColor(requireContext(), android.R.color.white)
                     )
-
+                    tvStatus.visibility = View.VISIBLE
+                    tvPredNoSensor.visibility = View.GONE
                     tvPredSubtitle.visibility = View.VISIBLE
                     return@observe   // jangan lanjut ke logic normal/abnormal
                 }
@@ -181,7 +184,8 @@ class HomeFragment : Fragment() {
                     tvStatus.setTextColor(
                         ContextCompat.getColor(requireContext(), android.R.color.white)
                     )
-
+                    tvStatus.visibility = View.VISIBLE
+                    tvPredNoSensor.visibility = View.GONE
                     tvPredSubtitle.visibility = View.VISIBLE
                     return@observe   // stop di sini juga
                 }
@@ -190,33 +194,39 @@ class HomeFragment : Fragment() {
             // === TIDAK ADA ERROR -> pakai status normal / abnormal / tidak ada prediksi ===
             if (status.isNullOrBlank()) {
                 tvStatus.text = "Tidak Ada Prediksi"
-                tvStatus.setBackgroundResource(R.drawable.bg_prediction_chip_no_prediction)
+                tvStatus.visibility = View.GONE
                 container.setBackgroundResource(R.drawable.bg_prediction_container_no_prediction)
                 tvStatus.setTextColor(
                     ContextCompat.getColor(requireContext(), android.R.color.white)
                 )
-
-                tvPredSubtitle.visibility = View.GONE   // atau mau isi pesan lain
+                tvPredNoSensor.visibility = View.VISIBLE
+                tvPredTime.visibility = View.GONE
+                tvPredSubtitle.visibility = View.GONE
             } else {
                 container.visibility = View.VISIBLE
                 when (status.lowercase()) {
                     "normal" -> {
                         tvStatus.text = "Normal"
+                        tvStatus.visibility = View.VISIBLE
                         tvStatus.setBackgroundResource(R.drawable.bg_prediction_chip)
                         container.setBackgroundResource(R.drawable.bg_prediction_container)
                         tvStatus.setTextColor(
                             ContextCompat.getColor(requireContext(), android.R.color.white)
                         )
                         tvPredSubtitle.visibility = View.GONE
+                        tvPredNoSensor.visibility = View.GONE
+                        tvStatus.visibility = View.VISIBLE
                     }
                     "abnormal" -> {
                         tvStatus.text = "Abnormal"
+                        tvStatus.visibility = View.VISIBLE
                         tvStatus.setBackgroundResource(R.drawable.bg_prediction_chip_abnormal)
                         container.setBackgroundResource(R.drawable.bg_prediction_container_abnormal)
                         tvStatus.setTextColor(
                             ContextCompat.getColor(requireContext(), android.R.color.white)
                         )
                         tvPredSubtitle.visibility = View.GONE
+                        tvPredNoSensor.visibility = View.GONE
                     }
                     else -> {
                         tvStatus.text = "-"

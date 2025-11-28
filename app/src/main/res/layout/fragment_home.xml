@@ -105,7 +105,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:background="@drawable/bg_prediction_container"
+                    android:background="@drawable/bg_prediction_container_no_prediction"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="10dp">
 
@@ -121,10 +121,10 @@
                             android:id="@+id/tvPredStatus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/bg_prediction_chip"
+                            android:background="@drawable/bg_prediction_chip_no_prediction"
                             android:paddingHorizontal="18dp"
                             android:paddingVertical="8dp"
-                            android:text="Normal"
+                            android:text="Tidak Ada Prediksi"
                             android:textColor="@android:color/white"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -140,7 +140,7 @@
                             android:id="@+id/tvPredTime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="13:45"
+                            android:text="-"
                             android:textColor="#111827"
                             android:textSize="16sp" />
                     </LinearLayout>
@@ -151,9 +151,19 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Informasi harian tidak ditemukan."
+                        android:text="Sensor tidak aktif!"
                         android:textColor="#4B5563"
                         android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tvPredNoSensor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="Aktifkan kandang untuk menggunakan fitur ini."
+                        android:textColor="#4B5563"
+                        android:textSize="12sp"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 
