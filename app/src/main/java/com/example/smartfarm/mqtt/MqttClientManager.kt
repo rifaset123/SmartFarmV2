@@ -15,7 +15,7 @@ class MqttClientManager @Inject constructor(
 ) {
 
     // change to your broker
-    private val serverUri = "tcp://10.156.70.190:1883"
+    private val serverUri = "tcp://10.94.215.155"
 
     private val clientId = "android-" + UUID.randomUUID().toString().take(8)
 

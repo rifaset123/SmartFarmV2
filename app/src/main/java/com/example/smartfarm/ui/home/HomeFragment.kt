@@ -292,12 +292,27 @@ class HomeFragment : Fragment() {
         // update spinner when names arrive
         homeViewModel.primaryButtonMode.observe(viewLifecycleOwner) { mode ->
             if (!isAdded || _binding == null) return@observe
+
             val btn = binding.includedSensorKandang.btnEnter
+            val btnDaily = binding.includedDataHarian.btnEnterData
 
             when (mode) {
                 PrimaryButtonMode.HIDDEN -> {
                     btn.visibility = View.GONE
+
+                    // kandang belum aktif -> tombol data harian di-disable, abu-abu
+                    btnDaily.apply {
+                        isEnabled = false
+                        text = "Kandang Belum Aktif!"
+                        backgroundTintList = ColorStateList.valueOf(
+                            ContextCompat.getColor(requireContext(), R.color.gray)
+                        )
+                        setTextColor(
+                            ContextCompat.getColor(requireContext(), android.R.color.white)
+                        )
+                    }
                 }
+
                 PrimaryButtonMode.ACTIVATE -> {
                     btn.visibility = View.VISIBLE
                     val loading = homeViewModel.isLoading.value == true
@@ -307,7 +322,9 @@ class HomeFragment : Fragment() {
                     val colorRes = if (loading) R.color.gray else R.color.color_1
                     val color = ContextCompat.getColor(requireContext(), colorRes)
                     btn.backgroundTintList = ColorStateList.valueOf(color)
-                    btn.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+                    btn.setTextColor(
+                        ContextCompat.getColor(requireContext(), android.R.color.white)
+                    )
 
                     btn.setOnClickListener {
                         if (!loading) {
@@ -318,18 +335,46 @@ class HomeFragment : Fragment() {
                             }
                         }
                     }
+
+                    // masih belum aktif -> tombol data harian abu-abu
+                    btnDaily.apply {
+                        isEnabled = false
+                        text = "Kandang Belum Aktif!"
+                        backgroundTintList = ColorStateList.valueOf(
+                            ContextCompat.getColor(requireContext(), R.color.color_9)
+                        )
+                        setTextColor(
+                            ContextCompat.getColor(requireContext(), android.R.color.white)
+                        )
+                    }
                 }
+
                 PrimaryButtonMode.ENTER -> {
                     btn.visibility = View.VISIBLE
                     btn.isEnabled = true
                     btn.text = getString(R.string.enter_cage)
 
-                    val color = ContextCompat.getColor(requireContext(), R.color.color_9)
+                    val color = ContextCompat.getColor(requireContext(), R.color.gray)
                     btn.backgroundTintList = ColorStateList.valueOf(color)
-                    btn.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+                    btn.setTextColor(
+                        ContextCompat.getColor(requireContext(), android.R.color.white)
+                    )
 
                     btn.setOnClickListener {
                         toast("To be continue...")
+                    }
+
+                    // kandang aktif -> tombol data harian aktif lagi
+                    btnDaily.apply {
+                        isEnabled = true
+                        // pakai text default dari XML atau ubah di sini kalau mau
+                        text = "Masukkan Data Harian"
+                        backgroundTintList = ColorStateList.valueOf(
+                            ContextCompat.getColor(requireContext(), R.color.gray)
+                        )
+                        setTextColor(
+                            ContextCompat.getColor(requireContext(), android.R.color.white)
+                        )
                     }
                 }
             }
@@ -340,7 +385,8 @@ class HomeFragment : Fragment() {
         homeViewModel.isLoading.observe(viewLifecycleOwner) { loading ->
             if (!isAdded || _binding == null) return@observe
             val btn = binding.includedDataHarian.btnEnterData
-            btn.isEnabled = !loading
+            val isActive = homeViewModel.primaryButtonMode.value == PrimaryButtonMode.ENTER
+            btn.isEnabled = !loading && isActive
         }
 
         homeViewModel.cageNames.observe(viewLifecycleOwner) { names ->

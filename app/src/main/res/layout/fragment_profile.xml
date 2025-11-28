@@ -290,7 +290,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:onClick="logout"
-                android:text="logout test"
+                android:text="logout"
                 android:backgroundTint="@color/button_gray"
                 android:textColor="@android:color/white"
                 app:cornerRadius="8dp"
