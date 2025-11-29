@@ -47,7 +47,7 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loadingDialogBar = LoadingDialogBar(requireContext())
-        prefilledTest()
+//        prefilledTest()
         observer()
         binding.loginBtn.setOnClickListener {
             if (validation()) {

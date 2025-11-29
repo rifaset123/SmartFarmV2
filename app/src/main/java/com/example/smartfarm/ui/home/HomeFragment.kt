@@ -291,6 +291,9 @@ class HomeFragment : Fragment() {
                     if (cageId != null) {
                         homeViewModel.refreshToday(cageId, lastBearerToken)
                     }
+                    binding.includedDataHarian.tvTemp.text = "-"
+                    binding.includedDataHarian.tvHumidity.text = "-"
+                    binding.includedDataHarian.tvAmmonia.text = "-"
                 }
             }
             override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
