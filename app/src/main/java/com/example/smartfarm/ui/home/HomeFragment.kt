@@ -172,6 +172,7 @@ class HomeFragment : Fragment() {
                     tvStatus.visibility = View.VISIBLE
                     tvPredNoSensor.visibility = View.GONE
                     tvPredSubtitle.visibility = View.VISIBLE
+                    tvPredTime.visibility = View.VISIBLE
                     return@observe   // jangan lanjut ke logic normal/abnormal
                 }
                 2 -> {
@@ -187,6 +188,7 @@ class HomeFragment : Fragment() {
                     tvStatus.visibility = View.VISIBLE
                     tvPredNoSensor.visibility = View.GONE
                     tvPredSubtitle.visibility = View.VISIBLE
+                    tvPredTime.visibility = View.VISIBLE
                     return@observe   // stop di sini juga
                 }
             }
@@ -216,6 +218,7 @@ class HomeFragment : Fragment() {
                         tvPredSubtitle.visibility = View.GONE
                         tvPredNoSensor.visibility = View.GONE
                         tvStatus.visibility = View.VISIBLE
+                        tvPredTime.visibility = View.VISIBLE
                     }
                     "abnormal" -> {
                         tvStatus.text = "Abnormal"
@@ -227,6 +230,7 @@ class HomeFragment : Fragment() {
                         )
                         tvPredSubtitle.visibility = View.GONE
                         tvPredNoSensor.visibility = View.GONE
+                        tvPredTime.visibility = View.VISIBLE
                     }
                     else -> {
                         tvStatus.text = "-"
